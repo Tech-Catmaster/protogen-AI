@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protogen AI</title>
+<style>
+/* LOADING SCREEN - 5 SECONDS */
+#loader {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+  background: linear-gradient(45deg, #0d0d0f, #1a0a2e, #16213e);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  z-index: 9999; transition: opacity 0.5s ease-out;
+}
+.loader-spinner {
+  width: 80px; height: 80px; border: 4px solid #333; border-top: 4px solid #00ffff;
+  border-radius: 50%; animation: spin 1s linear infinite;
+}
+.loader-title { 
+  font-size: 28px; font-weight: bold; background: linear-gradient(90deg, #ff00ff, #00ffff);
+  -webkit-background-clip: text; color: transparent; margin-top: 20px;
+  animation: pulse 2s ease-in-out infinite;
+}
+.loader-text { color: #888; font-size: 16px; margin-top: 10px; }
+
+/* HIDE MAIN CONTENT UNTIL LOADED */
+#main-content { display: none; }
+
+/* YOUR EXISTING CSS (unchanged) */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
+body { overflow:hidden; transition:0.3s; background:#0d0d0f; color:#f1f1f1; }
+body.light { --bg:#f5f5f5; --text:#111; --card:#ffffffcc; --sidebar:#ffffff; --input:#eee; }
+body.dark { --bg:#0d0d0f; --text:#f1f1f1; --card:#1a1a1ccc; --sidebar:#111; --input:#222; }
+body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
+/* ... [REST OF YOUR ORIGINAL CSS HERE - SAME AS BEFORE] ... */
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+</style>
+</head>
+<body class="dark">
+<!-- 5-SECOND PROLOGEN LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-spinner"></div>
+  <div class="loader-title">Protogen AI</div>
+  <div class="loader-text">Initializing neural network...</div>
+</div>
+
+<!-- YOUR EXISTING HTML (unchanged) -->
+<div id="navbar">...</div>
+<div id="sidebar">...</div>
+<div id="main" id="main-content">...</div>
+<!-- ... [ALL YOUR ORIGINAL HTML CONTENT HERE] ... -->
+
+<script>
+/* 5-SECOND LOADING SCREEN, THEN GO TO splash.html */
+setTimeout(() => {
+  window.location.href = "splash.html";   // <-- redirect after loading
+}, 5000);
+
+/* (If you still want to show the loader fade before redirect, keep below) */
+setTimeout(() => {
+  document.getElementById('loader').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('loader').style.display = 'none';
+  }, 500);
+}, 4500);
+
+/* YOUR EXISTING JAVASCRIPT (unchanged) */
+const sidebar = document.getElementById('sidebar');
+// ... [ALL YOUR ORIGINAL JS CODE HERE] ...
+</script>
+
+</body>
+</html>

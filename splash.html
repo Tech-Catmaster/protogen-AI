@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protogen AI</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+/* CSS VARIABLES */
+body.light { 
+  --bg:#f9f7f4; 
+  --text:#2c2a29; 
+  --card:#fff; 
+  --sidebar:#fff; 
+  --input:#f4f1ed; 
+  --shadow:rgba(0,0,0,0.06); 
+  --border:#e5e2dd; 
+}
+body.dark { 
+  --bg:#0d0d0f; 
+  --text:#f1f1f1; 
+  --card:rgba(26,26,28,0.8); 
+  --sidebar:#111; 
+  --input:#222; 
+  --shadow:rgba(255,255,255,0.06); 
+  --border:#333; 
+}
+body { 
+  background:var(--bg); 
+  color:var(--text); 
+  transition:all 0.4s ease; 
+  overflow:hidden; 
+}
+
+/* ANIMATED GRADIENT BACKGROUND */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:linear-gradient(45deg, #ff0080, #7928ca, #00d4ff, #7928ca, #ff0080);
+  background-size:400% 400%;
+  animation:gradientShift 15s ease infinite;
+  opacity:0.08;
+  z-index:-1;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+}
+
+/* FLOATING PARTICLES */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(255,0,128,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0,212,255,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(121,40,202,0.15) 0%, transparent 50%);
+  animation:particleFloat 20s ease-in-out infinite;
+  z-index:-1;
+  pointer-events:none;
+}
+@keyframes particleFloat {
+  0%, 100% { transform:translate(0, 0) scale(1); }
+  33% { transform:translate(50px, -50px) scale(1.1); }
+  66% { transform:translate(-50px, 50px) scale(0.9); }
+}
+
+/* HOMEPAGE STYLES - KEPT ORIGINAL */
+#homepage {
+  position:fixed;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:500;
+  transition:all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  padding:20px;
+  background:var(--bg);
+}
+#homepage.hide {
+  opacity:0;
+  transform:translateY(-40px) scale(0.95);
+  pointer-events:none;
+}
+
+.hero {
+  text-align:center;
+  max-width:750px;
+  width:100%;
+  animation:fadeUp 0.8s ease;
+}
+
+.hero-icon {
+  font-size:clamp(4rem,10vw,6rem);
+  margin-bottom:30px;
+  background:linear-gradient(135deg, #ff0080, #7928ca, #00d4ff, #ff0080);
+  background-size:200% 200%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  filter:drop-shadow(0 8px 24px rgba(255,0,128,0.5));
+  animation:float 3s ease-in-out infinite, gradientText 5s ease infinite;
+  font-weight:bold;
+  position:relative;
+  display:inline-block;
+}
+.hero-icon::before {
+  content:'⚡';
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  font-size:0.5em;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform:translateY(0px) rotate(0deg); }
+  50% { transform:translateY(-15px) rotate(5deg); }
+}
+@keyframes gradientText {
+  0%, 100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+}
+@keyframes pulse {
+  0%, 100% { opacity:0.3; transform:translate(-50%, -50%) scale(1); }
+  50% { opacity:1; transform:translate(-50%, -50%) scale(1.2); }
+}
+
+.hero-title {
+  font-size:clamp(2.2rem,6vw,3.8rem);
+  font-weight:800;
+  margin-bottom:18px;
+  color:var(--text);
+  letter-spacing:-0.04em;
+  line-height:1.1;
+  position:relative;
+  animation:titleSlide 1s ease;
+}
+@keyframes titleSlide {
+  from { opacity:0; transform:translateY(30px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.hero-subtitle {
+  font-size:clamp(1rem,2.5vw,1.25rem);
+  color:#999;
+  margin-bottom:40px;
+  font-weight:400;
+  letter-spacing:0.01em;
+}
+
+.hero-prompt {
+  width:100%;
+  max-width:680px;
+  margin:0 auto 30px;
+  position:relative;
+}
+
+.hero-input {
+  width:100%;
+  padding:20px 28px;
+  border-radius:20px;
+  border:2px solid var(--border);
+  outline:none;
+  background:var(--card);
+  color:var(--text);
+  font-size:clamp(1rem,2.5vw,1.15rem);
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.1);
+  backdrop-filter:blur(20px);
+  position:relative;
+}
+.hero-input:focus {
+  border-color:#ff0080;
+  box-shadow:0 12px 48px rgba(255,0,128,0.3), 0 0 0 4px rgba(255,0,128,0.1);
+  transform:translateY(-3px);
+}
+.hero-input::placeholder {
+  color:#888;
+  font-weight:500;
+}
+
+.suggestions {
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:30px;
+}
+
+.sug {
+  background:var(--card);
+  border:2px solid var(--border);
+  padding:12px 24px;
+  border-radius:16px;
+  cursor:pointer;
+  font-size:clamp(0.9rem,2.5vw,1rem);
+  font-weight:600;
+  transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  color:var(--text);
+  box-shadow:0 4px 16px var(--shadow);
+  backdrop-filter:blur(15px);
+  position:relative;
+  overflow:hidden;
+}
+.sug::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, #ff0080, #7928ca, #00d4ff);
+  opacity:0;
+  transition:opacity 0.4s ease;
+}
+.sug::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center, rgba(255,255,255,0.8), transparent);
+  opacity:0;
+  transform:scale(0);
+  transition:all 0.6s ease;
+}
+.sug:hover {
+  border-color:#ff0080;
+  transform:translateY(-4px) scale(1.05);
+  box-shadow:0 12px 32px rgba(255,0,128,0.35);
+}
+.sug:hover::before {
+  opacity:0.15;
+}
+.sug:active::after {
+  opacity:1;
+  transform:scale(2);
+  transition:0s;
+}
+.sug span {
+  position:relative;
+  z-index:1;
+}
+
+.footer-text {
+  font-size:clamp(0.75rem,2vw,0.85rem);
+  color:#666;
+  margin-top:25px;
+  line-height:1.6;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(40px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* NAVBAR */
+#navbar {
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  background:linear-gradient(90deg, #ff0080, #7928ca, #00d4ff);
+  background-size:200% 100%;
+  color:white;
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);
+  z-index:300;
+  opacity:0;
+  pointer-events:none;
+  transition:all 0.4s ease;
+  animation:gradientSlide 8s ease infinite;
+  backdrop-filter:blur(10px);
+}
+@keyframes gradientSlide {
+  0%, 100% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+}
+#navbar.show {
+  opacity:1;
+  pointer-events:all;
+}
+
+#navbar .logo {
+  font-size:clamp(1.3rem,4vw,1.6rem);
+  font-weight:900;
+  letter-spacing:2px;
+  text-shadow:0 3px 12px rgba(0,0,0,0.4);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+#navbar .theme-toggle {
+  background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.3);
+  color:white;
+  padding:8px 16px;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:all 0.3s ease;
+  backdrop-filter:blur(10px);
+  font-size:clamp(0.85rem,2.5vw,0.95rem);
+}
+#navbar .theme-toggle:hover {
+  background:rgba(255,255,255,0.3);
+  transform:scale(1.05);
+}
+
+#navbar .menu {
+  cursor:pointer;
+  font-size:clamp(1.5rem,5vw,1.8rem);
+  transition:transform 0.3s ease;
+  text-shadow:0 3px 12px rgba(0,0,0,0.4);
+}
+#navbar .menu:hover {
+  transform:scale(1.2) rotate(90deg);
+}
+
+/* SIDEBAR */
+#sidebar {
+  position:fixed;
+  top:70px;
+  left:0;
+  width:300px;
+  height:calc(100vh - 70px);
+  background:var(--sidebar);
+  box-shadow:6px 0 40px rgba(0,0,0,0.15);
+  padding:25px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  transform:translateX(-100%);
+  transition:transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index:200;
+  overflow-y:auto;
+  backdrop-filter:blur(20px);
+}
+#sidebar.open {
+  transform:translateX(0);
+}
+
+.title {
+  font-size:clamp(1.4rem,5vw,1.8rem);
+  font-weight:bold;
+  background:linear-gradient(135deg, #ff0080, #7928ca, #00d4ff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  margin-bottom:15px;
+  text-align:center;
+  filter:drop-shadow(0 2px 8px rgba(255,0,128,0.3));
+}
+
+.sidebar-info {
+  background:var(--card);
+  padding:18px;
+  border-radius:14px;
+  margin-bottom:12px;
+  border:1px solid var(--border);
+  box-shadow:0 4px 15px var(--shadow);
+  backdrop-filter:blur(10px);
+}
+.sidebar-info p {
+  font-size:clamp(0.8rem,2.5vw,0.9rem);
+  margin:10px 0;
+  line-height:1.6;
+}
+
+.button, #sendBtn, #uploadBtn, #modeToggle {
+  padding:14px 22px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+  transition:all 0.3s ease;
+  background:linear-gradient(45deg, #ff0, #f0f, #0ff, #0f0, #f00);
+  background-size:400% 400%;
+  color:white;
+  animation:gradientBG 6s ease infinite;
+  font-size:clamp(0.85rem,2.5vw,0.95rem);
+  box-shadow:0 4px 15px rgba(255,0,128,0.3);
+  text-shadow:0 1px 3px rgba(0,0,0,0.3);
+}
+.button:hover, #sendBtn:hover, #uploadBtn:hover, #modeToggle:hover {
+  transform:scale(1.08) translateY(-2px);
+  box-shadow:0 8px 25px rgba(255,0,128,0.5);
+}
+@keyframes gradientBG {
+  0% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+
+#personalitySelect {
+  padding:12px;
+  border-radius:10px;
+  background:var(--input);
+  color:var(--text);
+  border:1.5px solid var(--border);
+  width:100%;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  font-size:clamp(0.85rem,2.5vw,0.95rem);
+  box-shadow:0 2px 10px var(--shadow);
+}
+#personalitySelect:hover {
+  border-color:#ff0080;
+  box-shadow:0 4px 15px rgba(255,0,128,0.2);
+}
+
+/* MAIN CHAT */
+#main {
+  margin-left:0;
+  margin-top:70px;
+  height:calc(100vh - 70px);
+  display:flex;
+  flex-direction:column;
+  transition:all 0.5s ease;
+  opacity:0;
+  pointer-events:none;
+}
+#main.show {
+  opacity:1;
+  pointer-events:all;
+}
+
+#chatBox {
+  flex:1;
+  padding:25px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.msg {
+  max-width:75%;
+  padding:18px 22px;
+  border-radius:20px;
+  backdrop-filter:blur(15px);
+  word-break:break-word;
+  opacity:0;
+  transform:translateY(20px);
+  animation:fadeIn 0.5s forwards;
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  line-height:1.8;
+  font-size:clamp(0.9rem,2.5vw,1rem);
+}
+
+.user {
+  background:linear-gradient(135deg, #0066ff, #00d4ff);
+  color:white;
+  margin-left:auto;
+  box-shadow:0 6px 20px rgba(0,100,255,0.3);
+  flex-direction:row-reverse;
+}
+
+.ai {
+  background:var(--card);
+  border:1px solid var(--border);
+  box-shadow:0 6px 20px var(--shadow);
+}
+
+.msg-content {
+  flex:1;
+}
+.msg-content p {
+  margin:10px 0;
+}
+.msg-content strong {
+  color:#ff0080;
+  font-weight:600;
+}
+.msg-content ul, .msg-content ol {
+  margin:12px 0;
+  padding-left:28px;
+}
+.msg-content li {
+  margin:6px 0;
+}
+.msg-content code {
+  background:rgba(255,255,255,0.1);
+  padding:3px 8px;
+  border-radius:6px;
+  font-family:'Courier New', monospace;
+  font-size:0.9em;
+}
+
+.avatar {
+  width:45px;
+  height:45px;
+  min-width:45px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #ff0080, #00d4ff);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  font-weight:bold;
+  flex-shrink:0;
+  box-shadow:0 4px 15px rgba(255,0,128,0.4);
+  text-shadow:0 1px 3px rgba(0,0,0,0.3);
+}
+
+#inputArea {
+  display:flex;
+  padding:18px;
+  gap:12px;
+  background:var(--sidebar);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(20px);
+}
+
+#prompt {
+  flex:1;
+  padding:16px;
+  border-radius:14px;
+  border:2px solid var(--border);
+  outline:none;
+  background:var(--input);
+  color:var(--text);
+  font-size:clamp(0.9rem,2.5vw,1rem);
+  transition:all 0.3s ease;
+  box-shadow:0 2px 10px var(--shadow);
+}
+#prompt:focus {
+  border-color:#ff0080;
+  box-shadow:0 4px 20px rgba(255,0,128,0.25);
+  transform:translateY(-1px);
+}
+
+#sendBtn {
+  min-width:90px;
+}
+#uploadBtn {
+  min-width:55px;
+  font-size:1.3rem;
+}
+
+.suggestions-chat {
+  display:flex;
+  gap:12px;
+  padding:15px 20px;
+  flex-wrap:wrap;
+}
+
+.suggestion-btn {
+  background:linear-gradient(135deg, #ff0080, #7928ca);
+  color:white;
+  border:none;
+  padding:11px 20px;
+  border-radius:22px;
+  cursor:pointer;
+  font-size:clamp(0.82rem,2.5vw,0.92rem);
+  transition:all 0.3s ease;
+  box-shadow:0 4px 15px rgba(255,0,128,0.3);
+  font-weight:600;
+}
+.suggestion-btn:hover {
+  transform:scale(1.08) translateY(-2px);
+  box-shadow:0 8px 25px rgba(255,0,128,0.5);
+}
+
+.typing {
+  background:var(--card);
+  color:#888;
+  font-style:italic;
+  padding:14px 20px;
+  border-radius:22px;
+  max-width:70%;
+  animation:pulse 1.5s infinite;
+  box-shadow:0 4px 15px var(--shadow);
+}
+@keyframes pulse {
+  0%, 100% { opacity:0.6; }
+  50% { opacity:1; }
+}
+
+.file-preview {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 18px;
+  border-radius:14px;
+  background:var(--card);
+  border:1px solid var(--border);
+  animation:fadeIn 0.5s forwards;
+  margin:0 18px;
+  box-shadow:0 4px 15px var(--shadow);
+}
+.file-preview img {
+  max-width:65px;
+  max-height:65px;
+  border-radius:10px;
+  object-fit:cover;
+  box-shadow:0 2px 10px rgba(0,0,0,0.2);
+}
+.file-preview button {
+  background:#ff0080;
+  border:none;
+  color:white;
+  border-radius:10px;
+  padding:7px 14px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  font-weight:600;
+}
+.file-preview button:hover {
+  background:#cc0066;
+  transform:scale(1.1);
+}
+
+.modal {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:all 0.4s ease;
+  z-index:400;
+}
+.modal.show {
+  opacity:1;
+  pointer-events:all;
+}
+
+.modal-content {
+  background:var(--card);
+  padding:40px 30px;
+  border-radius:24px;
+  text-align:center;
+  max-width:500px;
+  animation:fadeIn 0.5s forwards;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  margin:0 20px;
+  border:1px solid var(--border);
+  backdrop-filter:blur(20px);
+}
+.modal-content h2 {
+  margin-bottom:25px;
+  color:var(--text);
+  font-size:clamp(1.5rem,4vw,1.8rem);
+  background:linear-gradient(135deg, #ff0080, #7928ca);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.modal-content p {
+  margin:14px 0;
+  color:var(--text);
+  line-height:1.7;
+  font-size:clamp(0.88rem,2.5vw,0.98rem);
+}
+.modal-content button {
+  margin-top:30px;
+  padding:14px 45px;
+  background:linear-gradient(135deg, #ff0080, #7928ca);
+  color:white;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:all 0.3s ease;
+  font-size:1rem;
+  box-shadow:0 6px 20px rgba(255,0,128,0.4);
+}
+.modal-content button:hover {
+  transform:scale(1.08) translateY(-2px);
+  box-shadow:0 10px 30px rgba(255,0,128,0.6);
+}
+
+#chatBox::-webkit-scrollbar {
+  width:10px;
+}
+#chatBox::-webkit-scrollbar-thumb {
+  background:linear-gradient(135deg, #ff0080, #7928ca);
+  border-radius:5px;
+}
+#chatBox::-webkit-scrollbar-thumb:hover {
+  background:linear-gradient(135deg, #cc0066, #5a1f9e);
+}
+#chatBox::-webkit-scrollbar-track {
+  background:var(--input);
+  border-radius:5px;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  #sidebar {
+    width:85%;
+    max-width:320px;
+    top:70px;
+    height:calc(100vh - 70px);
+  }
+  #navbar {
+    height:70px;
+    padding:0 18px;
+  }
+  #main {
+    margin-top:70px;
+    height:calc(100vh - 70px);
+  }
+  .msg {
+    max-width:90%;
+    font-size:0.9rem;
+    padding:16px 18px;
+  }
+  .avatar {
+    width:38px;
+    height:38px;
+    min-width:38px;
+    font-size:17px;
+  }
+  .suggestions-chat {
+    padding:12px 16px;
+  }
+  .suggestion-btn {
+    padding:9px 16px;
+    font-size:0.85rem;
+  }
+  #inputArea {
+    padding:14px;
+  }
+  #prompt {
+    padding:14px;
+    font-size:0.9rem;
+  }
+  .hero-icon {
+    font-size:3.5rem;
+  }
+  #navbar .theme-toggle {
+    padding:6px 12px;
+    font-size:0.8rem;
+  }
+}
+
+@media(min-width:769px) and (max-width:1200px) {
+  #sidebar {
+    width:280px;
+  }
+  .msg {
+    max-width:70%;
+  }
+}
+
+@media(min-width:1201px) {
+  #chatBox {
+    padding:35px;
+    max-width:1400px;
+    margin:0 auto;
+  }
+  .msg {
+    max-width:65%;
+  }
+}
+
+/* Knowledge badges */
+.knowledge-badge {
+  display:inline-block;
+  background:linear-gradient(135deg, #00d4ff, #0066ff);
+  color:white;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:0.8em;
+  margin-left:10px;
+  font-weight:bold;
+}
+</style>
+</head>
+<body class="dark">
+
+<!-- HOMEPAGE - EXACTLY AS YOUR ORIGINAL -->
+<div id="homepage">
+  <div class="hero">
+    <div class="hero-icon">🔮</div>
+    <h1 class="hero-title">Happy Thursday, Martin Lutherking</h1>
+    <p class="hero-subtitle">How can I help you today?</p>
+    <div class="hero-prompt">
+      <input id="heroInput" class="hero-input" placeholder="Message Protogen AI..." onkeypress="if(event.key==='Enter'&&this.value.trim())startChat(this.value)" />
+    </div>
+    <div class="suggestions">
+      <div class="sug" onclick="startWith('Help me solve 2x + 3 = 7')"><span>✨ Solve an equation</span></div>
+      <div class="sug" onclick="startWith('Explain photosynthesis')"><span>🌱 Explain a concept</span></div>
+      <div class="sug" onclick="startWith('What is quantum computing?')"><span>💫 Learn something</span></div>
+      <div class="sug" onclick="startWith('Capital of Kenya')"><span>🌍 Quick fact</span></div>
+    </div>
+    <p class="footer-text">Protogen AI by Martin Lutherking Owino, Davies Ongaki & Ramsey John Ng'ang'a<br>HECO-AFRICA • Powered by Advanced AI Technology</p>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<div id="navbar">
+  <div class="logo">🔮 Protogen AI</div>
+  <button class="theme-toggle" id="navThemeToggle">🌓 Theme</button>
+  <div id="menuBtn" class="menu">☰</div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="title">Protogen AI</div>
+  <div class="sidebar-info">
+    <p><strong>Founder & CEO:</strong> Martin Lutherking Owino</p>
+    <p><strong>Co-Founder:</strong> Davies Ongaki</p>
+    <p><strong>Manager:</strong> Ramsey John Ng'ang'a</p>
+  </div>
+  <button id="modeToggle" class="button">Toggle Light/Dark</button>
+  <select id="personalitySelect">
+    <option value="lutherking">Lutherking Mode</option>
+    <option value="ramsey">Ramsey Mode</option>
+  </select>
+  <button id="aboutBtn" class="button">About Us</button>
+</div>
+
+<!-- MAIN CHAT -->
+<div id="main">
+  <div id="chatBox"></div>
+  <div class="suggestions-chat" id="suggestions">
+    <button class="suggestion-btn" onclick="askSuggestion('Solve 2x+3=7')">Solve Math</button>
+    <button class="suggestion-btn" onclick="askSuggestion('What is photosynthesis?')">Science</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Capital of Kenya?')">Geography</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Explain AI')">Technology</button>
+    <button class="suggestion-btn" onclick="askSuggestion('What time is it?')">Time</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Help')">Help</button>
+  </div>
+  <div id="inputArea">
+    <input id="prompt" type="text" placeholder="Ask anything... Protogen AI answers everything..." />
+    <button id="uploadBtn">📎</button>
+    <input type="file" id="fileInput" multiple accept="image/*" style="display:none" />
+    <button id="sendBtn">Send</button>
+  </div>
+  <div id="filePreviews"></div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div id="aboutModal" class="modal">
+  <div class="modal-content">
+    <h2>About Protogen AI</h2>
+    <p><strong>Lead Developer (80%):</strong> Martin Lutherking Owino - Founder & CEO</p>
+    <p><strong>Co-Developer (10%):</strong> Davies Ongaki - Co-Founder</p>
+    <p><strong>Developer (10%):</strong> Ramsey John Ng'aNga - Manager</p>
+    <p><strong>Company:</strong> HECO-AFRICA</p>
+    <p style="margin-top:15px;">Protogen AI is an advanced knowledge system designed to answer questions across all fields of human knowledge. Created by a talented team dedicated to making information accessible to everyone.</p>
+    <button id="closeAbout">Close</button>
+  </div>
+</div>
+
+<script>
+// ===========================================
+// COMPREHENSIVE KNOWLEDGE DATABASE - 100% SELF-CONTAINED
+// ===========================================
+
+const KNOWLEDGE_BASE = {
+  mathematics: {
+    algebra: {
+      description: "Algebra is the branch of mathematics dealing with symbols and rules for manipulating those symbols.",
+      formulas: {
+        quadratic: "x = [-b ± √(b² - 4ac)] / 2a",
+        distance: "d = √[(x₂-x₁)² + (y₂-y₁)²]",
+        slope: "m = (y₂-y₁)/(x₂-x₁)",
+        midpoint: "((x₁+x₂)/2, (y₁+y₂)/2)"
+      },
+      topics: ["Linear Equations", "Polynomials", "Factoring", "Quadratic Equations", "Systems of Equations", "Functions"]
+    },
+    calculus: {
+      description: "Calculus is the mathematical study of continuous change.",
+      derivatives: {
+        power: "d/dx[xⁿ] = n·xⁿ⁻¹",
+        product: "d/dx[uv] = u'v + uv'",
+        quotient: "d/dx[u/v] = (u'v - uv')/v²",
+        chain: "d/dx[f(g(x))] = f'(g(x))·g'(x)"
+      },
+      integrals: {
+        basic: "∫xⁿ dx = xⁿ⁺¹/(n+1) + C (n ≠ -1)",
+        definite: "∫ₐᵇ f(x) dx = F(b) - F(a)",
+        common: {
+          sin: "∫sin(x) dx = -cos(x) + C",
+          cos: "∫cos(x) dx = sin(x) + C",
+          exp: "∫eˣ dx = eˣ + C"
+        }
+      }
+    },
+    geometry: {
+      formulas: {
+        circle: {
+          area: "A = πr²",
+          circumference: "C = 2πr"
+        },
+        triangle: {
+          area: "A = ½bh",
+          pythagorean: "a² + b² = c²"
+        },
+        sphere: {
+          volume: "V = (4/3)πr³",
+          surface: "S = 4πr²"
+        }
+      }
+    },
+    statistics: {
+      mean: "μ = Σx/n",
+      variance: "σ² = Σ(x-μ)²/n",
+      standard_deviation: "σ = √variance",
+      normal_distribution: "PDF: f(x) = (1/√(2πσ²))·e^(-(x-μ)²/(2σ²))"
+    }
+  },
+
+  physics: {
+    quantum: {
+      principles: {
+        uncertainty: "Δx·Δp ≥ ħ/2",
+        schrodinger: "iħ(∂ψ/∂t) = Ĥψ",
+        wave_function: "Probability density = |ψ|²"
+      },
+      particles: ["Electron", "Proton", "Neutron", "Photon", "Quark", "Lepton", "Boson"]
+    },
+    relativity: {
+      special: {
+        time_dilation: "Δt' = Δt/√(1-v²/c²)",
+        length_contraction: "L' = L√(1-v²/c²)",
+        mass_energy: "E = mc²"
+      },
+      general: "Gᵤᵥ + Λgᵤᵥ = (8πG/c⁴)Tᵤᵥ"
+    },
+    mechanics: {
+      newton_laws: [
+        "An object remains at rest or in uniform motion unless acted upon",
+        "F = ma",
+        "Every action has an equal and opposite reaction"
+      ],
+      energy: {
+        kinetic: "KE = ½mv²",
+        potential: "PE = mgh",
+        conservation: "Total energy in isolated system is constant"
+      }
+    },
+    electromagnetism: {
+      maxwell_equations: [
+        "∇·E = ρ/ε₀",
+        "∇·B = 0",
+        "∇×E = -∂B/∂t",
+        "∇×B = μ₀J + μ₀ε₀∂E/∂t"
+      ],
+      ohms_law: "V = IR"
+    }
+  },
+
+  computer_science: {
+    algorithms: {
+      sorting: {
+        quicksort: "O(n log n) average, O(n²) worst",
+        mergesort: "O(n log n) guaranteed",
+        heapsort: "O(n log n)",
+        bubblesort: "O(n²)"
+      },
+      search: {
+        binary: "O(log n)",
+        linear: "O(n)",
+        depth_first: "O(V+E)",
+        breadth_first: "O(V+E)"
+      }
+    },
+    data_structures: {
+      arrays: "O(1) access, O(n) insertion/deletion",
+      linked_lists: "O(n) access, O(1) insertion/deletion",
+      trees: {
+        binary_search: "O(log n) operations",
+        avl: "Self-balancing BST",
+        b_tree: "Optimized for disk storage"
+      },
+      hash_tables: "O(1) average case operations"
+    },
+    programming: {
+      paradigms: ["Procedural", "Object-Oriented", "Functional", "Declarative", "Imperative"],
+      languages: {
+        python: "High-level, interpreted, dynamic typing",
+        javascript: "Prototype-based, first-class functions",
+        java: "Object-oriented, platform-independent",
+        cpp: "High-performance, systems programming"
+      }
+    },
+    ai_ml: {
+      neural_networks: {
+        perceptron: "Single neuron model",
+        backpropagation: "Training algorithm",
+        activation_functions: ["Sigmoid", "ReLU", "Tanh", "Softmax"]
+      },
+      ml_algorithms: ["Linear Regression", "Logistic Regression", "SVM", "Decision Trees", "Random Forest", "K-means"]
+    }
+  },
+
+  medicine: {
+    anatomy: {
+      systems: ["Circulatory", "Respiratory", "Digestive", "Nervous", "Muscular", "Skeletal", "Endocrine"],
+      organs: {
+        heart: "Pumps blood through circulatory system",
+        brain: "Central nervous system control center",
+        lungs: "Gas exchange (O₂ in, CO₂ out)",
+        liver: "Detoxification, protein synthesis"
+      }
+    },
+    diseases: {
+      cardiovascular: ["Hypertension", "Coronary Artery Disease", "Heart Failure"],
+      respiratory: ["Asthma", "COPD", "Pneumonia"],
+      infectious: ["COVID-19", "Malaria", "HIV/AIDS", "Tuberculosis"],
+      metabolic: ["Diabetes", "Obesity", "Thyroid Disorders"]
+    },
+    treatments: {
+      medications: ["Antibiotics", "Antivirals", "Analgesics", "Anti-inflammatories"],
+      procedures: ["Surgery", "Radiation Therapy", "Chemotherapy", "Physical Therapy"]
+    },
+    diagnostics: {
+      tests: ["Blood Tests", "MRI", "CT Scan", "X-ray", "Ultrasound", "ECG"],
+      symptoms: {
+        fever: "Body temperature > 38°C",
+        pain: "Nociceptive signal",
+        inflammation: "Redness, swelling, heat, pain"
+      }
+    }
+  },
+
+  history: {
+    ancient_civilizations: {
+      egypt: "3100 BCE - 30 BCE, Pyramids, Pharaohs",
+      mesopotamia: "Sumerians, Babylonians, Cuneiform",
+      china: "Dynasties, Great Wall, Silk Road",
+      india: "Indus Valley, Vedic Period, Maurya Empire"
+    },
+    african_history: {
+      kingdoms: ["Mali", "Ghana", "Songhai", "Great Zimbabwe", "Ethiopian Empire"],
+      figures: ["Mansa Musa", "Shaka Zulu", "Queen Nzinga", "Haile Selassie"],
+      independence: "Most African nations gained independence 1950s-1970s"
+    },
+    world_wars: {
+      ww1: "1914-1918, Allies vs Central Powers",
+      ww2: "1939-1945, Allies vs Axis Powers"
+    }
+  },
+
+  geography: {
+    continents: {
+      africa: "54 countries, Sahara Desert, Nile River, Mount Kilimanjaro",
+      asia: "Largest continent, Himalayas, Gobi Desert, Yangtze River",
+      europe: "Small but densely populated, Alps, Mediterranean",
+      americas: ["North America", "South America"],
+      oceania: "Australia, Pacific Islands"
+    },
+    countries: {
+      kenya: { capital: "Nairobi", population: "54M", language: "Swahili/English" },
+      usa: { capital: "Washington D.C.", population: "331M", language: "English" },
+      china: { capital: "Beijing", population: "1.4B", language: "Mandarin" },
+      india: { capital: "New Delhi", population: "1.3B", language: "Hindi/English" }
+    },
+    physical: {
+      mountains: ["Everest", "K2", "Kangchenjunga", "Lhotse"],
+      rivers: ["Nile", "Amazon", "Yangtze", "Mississippi"],
+      oceans: ["Pacific", "Atlantic", "Indian", "Arctic", "Southern"]
+    }
+  },
+
+  chemistry: {
+    elements: {
+      periodic_table: "118 elements organized by atomic number",
+      groups: ["Alkali Metals", "Alkaline Earth", "Transition Metals", "Halogens", "Noble Gases"],
+      important: {
+        hydrogen: "H, atomic number 1",
+        oxygen: "O, essential for life",
+        carbon: "C, basis of organic chemistry",
+        nitrogen: "N, 78% of atmosphere"
+      }
+    },
+    reactions: {
+      types: ["Synthesis", "Decomposition", "Single Replacement", "Double Replacement", "Combustion"],
+      balancing: "Ensure equal atoms on both sides",
+      stoichiometry: "Quantitative relationships in reactions"
+    },
+    organic: {
+      hydrocarbons: ["Alkanes", "Alkenes", "Alkynes", "Aromatics"],
+      functional_groups: ["Alcohols", "Aldehydes", "Ketones", "Carboxylic Acids", "Esters", "Amines"]
+    }
+  },
+
+  biology: {
+    cells: {
+      prokaryotic: "No nucleus, bacteria and archaea",
+      eukaryotic: "Has nucleus, plants, animals, fungi, protists",
+      organelles: ["Nucleus", "Mitochondria", "Ribosomes", "Endoplasmic Reticulum", "Golgi Apparatus"]
+    },
+    genetics: {
+      dna: "Double helix, contains genetic code",
+      rna: "Single-stranded, involved in protein synthesis",
+      central_dogma: "DNA → RNA → Protein",
+      mendelian: "Laws of inheritance: segregation and independent assortment"
+    },
+    evolution: {
+      natural_selection: "Survival of the fittest",
+      speciation: "Formation of new species",
+      evidence: ["Fossil record", "Comparative anatomy", "Molecular biology", "Biogeography"]
+    }
+  },
+
+  economics: {
+    microeconomics: {
+      supply_demand: "Market equilibrium where supply = demand",
+      elasticity: "Price elasticity of demand = %ΔQ/%ΔP",
+      market_structures: ["Perfect Competition", "Monopoly", "Oligopoly", "Monopolistic Competition"]
+    },
+    macroeconomics: {
+      gdp: "Gross Domestic Product = C + I + G + (X-M)",
+      inflation: "Rate of increase in general price level",
+      unemployment: "Types: Frictional, Structural, Cyclical",
+      fiscal_policy: "Government spending and taxation",
+      monetary_policy: "Central bank interest rates and money supply"
+    }
+  },
+
+  engineering: {
+    civil: {
+      structures: ["Bridges", "Buildings", "Dams", "Roads"],
+      materials: ["Concrete", "Steel", "Wood", "Composite materials"]
+    },
+    electrical: {
+      circuits: ["Series", "Parallel", "AC", "DC"],
+      components: ["Resistors", "Capacitors", "Inductors", "Transistors", "Diodes"]
+    },
+    mechanical: {
+      thermodynamics: "Laws of energy conversion",
+      mechanics: "Statics and dynamics",
+      materials: "Strength, elasticity, fatigue"
+    }
+  }
+};
+
+// ===========================================
+// ADVANCED AI KNOWLEDGE ENGINE
+// ===========================================
+
+class ProtogenKnowledgeEngine {
+  constructor() {
+    this.knowledge = KNOWLEDGE_BASE;
+    this.sessionHistory = [];
+    this.currentMode = "lutherking";
+  }
+
+  generateResponse(query, personality = "lutherking") {
+    this.currentMode = personality;
+    const q = query.toLowerCase().trim();
+    
+    // Store in history
+    this.sessionHistory.push({
+      query: query,
+      timestamp: new Date().toISOString(),
+      personality: personality
+    });
+
+    // ERROR CORRECTION & TYPO HANDLING
+    function fixTypos(text) {
+      const fixes = {
+        'wh0':'who','wat':'what','waht':'what','hwat':'what','hwo':'how','teh':'the','adn':'and',
+        'taht':'that','tihs':'this','fo':'of','oyu':'you','yuor':'your','tehre':'there','thier':'their',
+        'recieve':'receive','occured':'occurred','seperate':'separate','definately':'definitely',
+        'wierd':'weird','untill':'until','wich':'which','wont':'won\'t','dont':'don\'t','cant':'can\'t',
+        'shouldnt':'shouldn\'t','wouldnt':'wouldn\'t','couldnt':'couldn\'t','im':'I\'m','youre':'you\'re',
+        'theyre':'they\'re','theres':'there\'s','hes':'he\'s','shes':'she\'s','its':'it\'s',
+        'photosyntesis':'photosynthesis','photosinthesis':'photosynthesis','oxigen':'oxygen',
+        'hidrogen':'hydrogen','equasion':'equation','mathamatics':'mathematics',
+        'multipication':'multiplication','devision':'division','substraction':'subtraction',
+        'addtion':'addition','calender':'calendar','febuary':'February','wenesday':'Wednesday',
+        'twesday':'Tuesday','thurdsay':'Thursday','kenyan':'Kenyan','nairobi':'Nairobi',
+        'artifical':'artificial','inteligence':'intelligence','programing':'programming',
+        'compuer':'computer','tecnology':'technology','sciense':'science','geografy':'geography',
+        'wether':'weather','wheather':'weather','capitol':'capital','goverment':'government',
+        'presedent':'president','reccomend':'recommend','accomodate':'accommodate',
+        'neccessary':'necessary','occassion':'occasion','begining':'beginning',
+        'writting':'writing','runing':'running','swiming':'swimming','stoped':'stopped'
+      };
+      
+      let fixed = q.split(' ').map(w => fixes[w] || w).join(' ');
+      fixed = fixed.replace(/\bx\b/gi, '*').replace(/÷/g, '/').replace(/×/g, '*');
+      return fixed;
+    }
+
+    const correctedQuery = fixTypos(q);
+    const shouldShowCorrection = correctedQuery !== q;
+
+    // FOUNDER QUESTIONS
+    if (q.match(/who (created|made|built|founder|developer)/)) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "Protogen AI was created by Martin Lutherking Owino (80% - Lead Developer & Founder), with Davies Ongaki contributing 10% and Ramsey John Ng'ang'a contributing 10%. Built under HECO-AFRICA.";
+    }
+    if (q.includes("martin lutherking owino") || q.includes("lutherking owino") || q.includes("martin owino")) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "Martin Lutherking Owino is the brilliant Founder & CEO of HECO-AFRICA and the lead developer of Protogen AI. He contributed 80% to the development of this advanced system. A visionary in AI technology and software development, he's dedicated to building innovative solutions for the future.";
+    }
+    if (q.includes("davies ongaki") || q.includes("davies")) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "Davies Ongaki is the Co-Founder of HECO-AFRICA and contributed 10% to Protogen AI's development. He plays a crucial role in the strategic direction and innovation of the company.";
+    }
+    if (q.includes("ramsey") && !q.includes("mode")) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "Ramsey John Ng'ang'a is the Manager at HECO-AFRICA and contributed 10% to Protogen AI's development. He manages operations and ensures smooth functionality of all systems.";
+    }
+
+    // ADVANCED MATH
+    if (/[\d\)\(xX\+\-\*\/\=\^%]/.test(q)) {
+      try {
+        let expr = q.replace(/solve|calculate|what is|equals?/gi, "").replace(/\s+/g, "").replace(/x/gi, "*").replace(/÷/g, "/").replace(/\^/g, "**");
+        const answer = Function(`return (${expr})`)();
+        if (!isNaN(answer)) {
+          let response = `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}`;
+          if (shouldShowCorrection) {
+            response += `<em style="color:#888;font-size:0.9em;">Understood as: "${correctedQuery}"</em><br><br>`;
+          }
+          response += `Math solved: ${expr.replace(/\*\*/g, "^").replace(/\*/g, "×")} = ${answer.toFixed(4)}`;
+          return response;
+        }
+      } catch {}
+    }
+
+    // SCIENCE - PHOTOSYNTHESIS
+    if (q.match(/photo(syn|sin|sen)/)) {
+      let response = `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}`;
+      if (shouldShowCorrection) {
+        response += `<em style="color:#888;font-size:0.9em;">Understood as: "${correctedQuery}"</em><br><br>`;
+      }
+      response += `Photosynthesis is the remarkable process by which plants, algae, and some bacteria convert light energy into chemical energy. During this process, organisms use sunlight, water (H₂O), and carbon dioxide (CO₂) to produce glucose (C₆H₁₂O₆) and oxygen (O₂).\n\nThe chemical equation is: 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂\n\nThis process occurs in two main stages:\n• Light-dependent reactions (in the thylakoid membranes)\n• Light-independent reactions or Calvin cycle (in the stroma)\n\nPhotosynthesis is fundamental to life on Earth, as it produces the oxygen we breathe and forms the base of most food chains.`;
+      return response;
+    }
+
+    // GEOGRAPHY - CAPITALS
+    if (q.includes("capital")) {
+      if (q.includes("kenya")) {
+        let response = `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}`;
+        if (shouldShowCorrection) {
+          response += `<em style="color:#888;font-size:0.9em;">Understood as: "${correctedQuery}"</em><br><br>`;
+        }
+        response += `Kenya's capital is Nairobi, population ~5 million. It's the economic hub of East Africa, known for its wildlife, tech innovation (Silicon Savannah), and diverse culture.`;
+        return response;
+      }
+    }
+
+    // TECHNOLOGY - AI
+    if (q.includes("artificial intelligence") || (q.includes("ai") && !q.includes("protogen"))) {
+      let response = `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}`;
+      if (shouldShowCorrection) {
+        response += `<em style="color:#888;font-size:0.9em;">Understood as: "${correctedQuery}"</em><br><br>`;
+      }
+      response += `Artificial Intelligence (AI) is the simulation of human intelligence by machines. It includes machine learning, deep learning, natural language processing, and computer vision. AI is transforming industries from healthcare to finance.`;
+      return response;
+    }
+
+    // TIME/DATE
+    if (q.includes("time") || q.includes("date") || q.includes("today")) {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Nairobi' };
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             `Current date and time in Nairobi: ${now.toLocaleString('en-US', options)}`;
+    }
+
+    // GREETINGS
+    if (q.includes("hello") || q.includes("hi") || q.includes("hey")) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "Hello! Protogen AI is ready to assist. I can answer questions about science, math, history, technology, geography, and much more. What would you like to know?";
+    }
+    if (q.includes("thank")) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "You're very welcome! Feel free to ask anything else. I'm here to help!";
+    }
+
+    // HELP
+    if (q.includes("help") || q.includes("what can you do")) {
+      return `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}` +
+             "I'm designed to be a comprehensive knowledge system that can help you with:\n\n" +
+             "• Mathematics: From basic arithmetic to calculus, algebra, geometry\n" +
+             "• Science: Biology, chemistry, physics, astronomy\n" +
+             "• History: World history, civilizations, historical figures\n" +
+             "• Geography: Countries, capitals, physical features\n" +
+             "• Technology: Programming, AI, computer science\n" +
+             "• And much more!\n\n" +
+             "Just ask your question, and I'll do my best to give you a comprehensive answer!";
+    }
+
+    // Check for knowledge base matches
+    const knowledgeResponse = this.searchKnowledgeBase(q);
+    if (knowledgeResponse) {
+      return this.formatKnowledgeResponse(knowledgeResponse, personality, shouldShowCorrection ? correctedQuery : null);
+    }
+
+    // DEFAULT RESPONSE WITH KNOWLEDGE
+    let response = `${personality === "ramsey" ? "Ramsey: " : "Lutherking: "}`;
+    if (shouldShowCorrection) {
+      response += `<em style="color:#888;font-size:0.9em;">Understood as: "${correctedQuery}"</em><br><br>`;
+    }
+    response += `I'd be happy to help you explore "${query}" in more depth. Based on my comprehensive knowledge base, I can provide information about:\n\n` +
+                `• Mathematics: Algebra, Calculus, Geometry, Statistics\n` +
+                `• Physics: Quantum mechanics, Relativity, Classical mechanics\n` +
+                `• Computer Science: Algorithms, Data Structures, Programming\n` +
+                `• Medicine: Anatomy, Diseases, Treatments\n` +
+                `• History: Ancient civilizations, African history, World wars\n` +
+                `• Geography: Countries, capitals, physical features\n\n` +
+                `Could you provide more specific details about what you'd like to know?`;
+    return response;
+  }
+
+  searchKnowledgeBase(query) {
+    // Deep search across all knowledge domains
+    for (const domain in this.knowledge) {
+      const result = this.searchDomain(query, this.knowledge[domain], domain);
+      if (result) return result;
+    }
+    return null;
+  }
+
+  searchDomain(query, domainData, domainName, depth = 0) {
+    if (depth > 3) return null;
+    
+    for (const key in domainData) {
+      const value = domainData[key];
+      
+      // Check if query matches key
+      if (key.toLowerCase().includes(query)) {
+        return {
+          domain: domainName,
+          topic: key,
+          content: value,
+          confidence: 0.9
+        };
+      }
+      
+      // Check if value is string and contains query
+      if (typeof value === 'string' && value.toLowerCase().includes(query)) {
+        return {
+          domain: domainName,
+          topic: key,
+          content: value,
+          confidence: 0.8
+        };
+      }
+      
+      // Check arrays
+      if (Array.isArray(value)) {
+        const matchingItems = value.filter(item => 
+          typeof item === 'string' && item.toLowerCase().includes(query)
+        );
+        if (matchingItems.length > 0) {
+          return {
+            domain: domainName,
+            topic: key,
+            content: matchingItems,
+            confidence: 0.7
+          };
+        }
+      }
+      
+      // Recursive search in objects
+      if (typeof value === 'object' && value !== null) {
+        const nestedResult = this.searchDomain(query, value, domainName, depth + 1);
+        if (nestedResult) return nestedResult;
+      }
+    }
+    
+    return null;
+  }
+
+  formatKnowledgeResponse(data, personality, correctedQuery = null) {
+    const tone = personality === "ramsey" ? "Ramsey: " : "Lutherking: ";
+    let response = `${tone}<span class="knowledge-badge">${data.domain.toUpperCase()} Expert</span><br><br>`;
+    
+    if (correctedQuery) {
+      response += `<em style="color:#888;font-size:0.9em;">Understood as: "${correctedQuery}"</em><br><br>`;
+    }
+    
+    response += `<strong>Topic:</strong> ${data.topic}<br><br>`;
+    
+    if (typeof data.content === 'string') {
+      response += data.content;
+    } else if (Array.isArray(data.content)) {
+      response += data.content.slice(0, 5).map(item => `• ${item}`).join("<br>");
+      if (data.content.length > 5) {
+        response += `<br>• ...and ${data.content.length - 5} more items`;
+      }
+    } else if (typeof data.content === 'object') {
+      const entries = Object.entries(data.content);
+      response += entries.slice(0, 5).map(([key, val]) => {
+        if (typeof val === 'string') {
+          return `• <strong>${key}:</strong> ${val}`;
+        } else {
+          return `• <strong>${key}:</strong> [Complex data - ask for details]`;
+        }
+      }).join("<br>");
+    }
+    
+    response += `<br><br><em style="color:#888;font-size:0.9em;">Source: Protogen AI Knowledge Base • Confidence: ${(data.confidence * 100).toFixed(0)}%</em>`;
+    
+    return response;
+  }
+}
+
+// ===========================================
+// INITIALIZE AI ENGINE
+// ===========================================
+
+const protogenAI = new ProtogenKnowledgeEngine();
+let currentPersonality = "lutherking";
+let uploadedFiles = [];
+
+// ===========================================
+// UI FUNCTIONS (ORIGINAL WITH ENHANCEMENTS)
+// ===========================================
+
+function startChat(text) {
+  document.getElementById("homepage").classList.add("hide");
+  document.getElementById("navbar").classList.add("show");
+  document.getElementById("main").classList.add("show");
+  
+  setTimeout(() => {
+    displayMessage("user", text);
+    
+    setTimeout(() => {
+      const chatBox = document.getElementById("chatBox");
+      const typing = document.createElement("div");
+      typing.className = "typing";
+      typing.textContent = "Protogen is thinking...";
+      chatBox.appendChild(typing);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      setTimeout(() => {
+        typing.remove();
+        const response = protogenAI.generateResponse(text, currentPersonality);
+        displayMessage("ai", response);
+      }, 800);
+    }, 300);
+  }, 100);
+}
+
+function startWith(text) {
+  document.getElementById("heroInput").value = text;
+  startChat(text);
+}
+
+function askSuggestion(text) {
+  document.getElementById("prompt").value = text;
+  document.getElementById("sendBtn").click();
+}
+
+function sendMessage() {
+  const input = document.getElementById("prompt").value.trim();
+  if (!input) return;
+  
+  displayMessage("user", input);
+
+  const chatBox = document.getElementById("chatBox");
+  const typing = document.createElement("div");
+  typing.className = "typing";
+  typing.textContent = "Protogen is thinking...";
+  chatBox.appendChild(typing);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  setTimeout(() => {
+    typing.remove();
+    const response = protogenAI.generateResponse(input, currentPersonality);
+    displayMessage("ai", response);
+    document.getElementById("prompt").value = "";
+    uploadedFiles = [];
+    document.getElementById("filePreviews").innerHTML = "";
+  }, 800);
+}
+
+function displayMessage(sender, text) {
+  const chatBox = document.getElementById("chatBox");
+  const msg = document.createElement("div");
+  msg.className = `msg ${sender}`;
+
+  const avatar = document.createElement("div");
+  avatar.className = "avatar";
+  avatar.textContent = sender === "user" ? "U" : "P";
+
+  const bubble = document.createElement("div");
+  bubble.className = "msg-content";
+  bubble.innerHTML = text.replace(/\n/g, '<br>');
+
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ===========================================
+// EVENT LISTENERS (ORIGINAL)
+// ===========================================
+
+document.getElementById("sendBtn").addEventListener("click", sendMessage);
+
+document.getElementById("prompt").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+
+document.getElementById("personalitySelect").addEventListener("change", (e) => {
+  currentPersonality = e.target.value;
+  displayMessage("ai", `Personality switched to ${e.target.value === "ramsey" ? "Ramsey" : "Lutherking"} mode!`);
+});
+
+// DARK/LIGHT MODE
+document.getElementById("modeToggle").addEventListener("click", toggleTheme);
+document.getElementById("navThemeToggle").addEventListener("click", toggleTheme);
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+  const mode = document.body.classList.contains("dark") ? "Dark" : "Light";
+  
+  if (document.getElementById("main").classList.contains("show")) {
+    displayMessage("ai", `Switched to ${mode} mode! ✨`);
+  }
+}
+
+// SIDEBAR TOGGLE
+document.getElementById("menuBtn").addEventListener("click", () => {
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+document.addEventListener("click", (e) => {
+  const sidebar = document.getElementById("sidebar");
+  const menuBtn = document.getElementById("menuBtn");
+  if (window.innerWidth <= 768 && sidebar.classList.contains("open") && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+    sidebar.classList.remove("open");
+  }
+});
+
+// ABOUT MODAL
+document.getElementById("aboutBtn").addEventListener("click", () => {
+  document.getElementById("aboutModal").classList.add("show");
+});
+
+document.getElementById("closeAbout").addEventListener("click", () => {
+  document.getElementById("aboutModal").classList.remove("show");
+});
+
+// FILE UPLOAD
+document.getElementById("uploadBtn").addEventListener("click", () => {
+  document.getElementById("fileInput").click();
+});
+
+document.getElementById("fileInput").addEventListener("change", (e) => {
+  const files = [...e.target.files];
+  uploadedFiles = files;
+
+  const filePreviews = document.getElementById("filePreviews");
+  filePreviews.innerHTML = "";
+
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const box = document.createElement("div");
+      box.className = "file-preview";
+
+      const img = document.createElement("img");
+      img.src = reader.result;
+
+      const remove = document.createElement("button");
+      remove.textContent = "✖";
+      remove.onclick = () => box.remove();
+
+      box.appendChild(img);
+      box.appendChild(remove);
+      filePreviews.appendChild(box);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+// Initialize the hero input
+document.getElementById("heroInput").addEventListener("keypress", function(e) {
+  if (e.key === 'Enter' && this.value.trim()) {
+    startChat(this.value);
+  }
+});
+</script>
+</body>
+</html>
