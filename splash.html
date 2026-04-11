@@ -1023,4 +1023,513 @@
             const box = document.getElementById('txBox');
             document.getElementById('txYou').textContent = you || '';
             const rw = document.getElementById('txReplyWrap');
+            if (reply) {
+                document.getElementById('txReply').innerHTML = reply;
+                rw.style.display = '';
+            } else {
+                rw.style.display = 'none';
+            }
+            box.classList.add('on');
+            clearTimeout(box._t);
+            box._t = setTimeout(() => box.classList.remove('on'), 8000);
+        }
+        function hideTx() {
+            document.getElementById('txBox').classList.remove('on');
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // SPEECH SYNTHESIS — human-like
+        // ═══════════════════════════════════════════════════════════
+        let ttsQueue = [], ttsBusy = false;
+
+        function speakText(text, opts = {}) {
+            if (!window.speechSynthesis) return;
+            const clean = text
+                .replace(/<[^>]+>/g, '')
+                .replace(/[🎵🎤🕐😄❓ℹ️💡🗑️🔇⏮⏭⏹▶⏸🔮🎯⚡★•🌍📐🔢⏰🌤️🎙️👋😂🤣💀🤦🙄]/gu, '')
+                .replace(/\*\*/g, '')
+                .trim();
+            if (!clean) return;
+            ttsQueue.push({ text: clean, ...opts });
+            if (!ttsBusy) drainTTS();
+        }
+
+        function drainTTS() {
+            if (!ttsQueue.length) { ttsBusy = false; return; }
+            ttsBusy = true;
+            const item = ttsQueue.shift();
+            const utt = new SpeechSynthesisUtterance(item.text);
+            const voices = window.speechSynthesis.getVoices();
+            const g = item.forceGender || voiceGender;
+            const lang = item.lang || activeLang;
+
+            utt.rate = 0.87 + Math.random() * 0.1;
+            utt.volume = 0.95;
+            utt.pitch = 1.0;
+
+            if (lang === 'fr-FR') {
+                const v = voices.find(v => /fr[-_]|french/i.test(v.lang + v.name));
+                if (v) { utt.voice = v; utt.lang = 'fr-FR'; }
+            } else if (lang === 'es-ES') {
+                const v = voices.find(v => /es[-_]|spanish/i.test(v.lang + v.name));
+                if (v) { utt.voice = v; utt.lang = 'es-ES'; }
+            } else if (lang === 'zh-CN') {
+                const v = voices.find(v => /zh[-_]|chinese|mandarin/i.test(v.lang + v.name));
+                if (v) { utt.voice = v; utt.lang = 'zh-CN'; }
+            } else {
+                if (g === 'female') {
+                    utt.pitch = 1.12;
+                    const v = voices.find(v =>
+                        /samantha|zira|karen|victoria|moira|tessa|fiona|ava|allison|joanna|kendra|kimberly|salli|nicole|google uk english female/i.test(v.name));
+                    if (v) utt.voice = v;
+                } else if (g === 'male') {
+                    utt.pitch = 0.9;
+                    const v = voices.find(v =>
+                        /daniel|alex|fred|thomas|james|david|mark|oliver|george|google uk english male|matthew|justin/i.test(v.name));
+                    if (v) utt.voice = v;
+                }
+            }
+
+            setLogo('speaking'); waveOn(true);
+
+            utt.onstart = () => {
+                setStatus('Bingo is speaking', '');
+            };
+            utt.onend = () => {
+                ttsBusy = false;
+                if (!ttsQueue.length) {
+                    setLogo('idle'); waveOn(false);
+                    setStatus('Hey Bingo', 'Tap orb · Say "Hey Bingo"');
+                    // Resume wake-word detection after speaking
+                    setTimeout(() => VR.startWake(), 700);
+                }
+                drainTTS();
+            };
+            utt.onerror = () => { ttsBusy = false; drainTTS(); };
+
+            window.speechSynthesis.speak(utt);
+        }
+
+        function stopSpeak() {
+            window.speechSynthesis.cancel();
+            ttsQueue = []; ttsBusy = false;
+            setLogo('idle'); waveOn(false);
+            setStatus('Hey Bingo', 'Tap orb · Say "Hey Bingo"');
+        }
+
+        // Pre-load voices
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // AUDIO — simulated playback tones
+        // ═══════════════════════════════════════════════════════════
+        function initAudio() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioCtx.createGain();
+            gainNode.gain.value = vol;
+            gainNode.connect(audioCtx.destination);
+        }
+        function tone(freq, dur, type = 'sine') {
+            try {
+                initAudio();
+                const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                o.type = type; o.frequency.value = freq;
+                g.gain.setValueAtTime(0.055, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+                o.start(); o.stop(audioCtx.currentTime + dur);
+            } catch (e) { }
+        }
+        function startChord() {
+            tone(523, 0.4);
+            setTimeout(() => tone(659, 0.4), 130);
+            setTimeout(() => tone(784, 0.5), 260);
+            setTimeout(() => tone(1047, 0.35), 390);
+        }
+
+        function playSong(idx) {
+            if (idx < 0 || idx >= SONGS.length) return;
+            curSong = idx;
+            const s = SONGS[idx];
+            playing = true; songPos = 0;
+            songDur = 170 + Math.floor(Math.random() * 120);
+            clearInterval(progTmr);
+            progTmr = setInterval(tickSong, 1000);
+            document.getElementById('player').classList.add('on');
+            document.getElementById('pTitle').textContent = s.t;
+            document.getElementById('pArtist').textContent = s.a + ' · ' + s.g;
+            document.getElementById('playBtn').textContent = '⏸';
+            document.getElementById('pTot').textContent = fmt(songDur);
+            startChord();
+        }
+        function tickSong() {
+            if (!playing) return;
+            songPos = Math.min(songPos + 1, songDur);
+            document.getElementById('pfill').style.width = (songPos / songDur * 100) + '%';
+            document.getElementById('pCur').textContent = fmt(songPos);
+            if (songPos >= songDur) nextSong();
+        }
+        function togglePlay() {
+            if (curSong < 0) { playSong(0); return; }
+            playing = !playing;
+            document.getElementById('playBtn').textContent = playing ? '⏸' : '▶';
+            if (playing) progTmr = setInterval(tickSong, 1000);
+            else clearInterval(progTmr);
+        }
+        function nextSong() { clearInterval(progTmr); playSong((curSong + 1) % SONGS.length); }
+        function prevSong() { clearInterval(progTmr); playSong((curSong - 1 + SONGS.length) % SONGS.length); }
+        function stopMusic() {
+            clearInterval(progTmr); playing = false; curSong = -1;
+            document.getElementById('player').classList.remove('on');
+            document.getElementById('pfill').style.width = '0%';
+            document.getElementById('pCur').textContent = '0:00';
+        }
+        function setVol(v) { vol = parseFloat(v); if (gainNode) gainNode.gain.value = vol; }
+        function seekSong(e) {
+            const r = document.getElementById('ptrack').getBoundingClientRect();
+            songPos = Math.floor(((e.clientX - r.left) / r.width) * songDur);
+        }
+        function fmt(s) { return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
+        function findSong(q) {
+            const lq = q.toLowerCase();
+            let i = SONGS.findIndex(s => s.t.toLowerCase().includes(lq) || s.a.toLowerCase().includes(lq) || s.g.toLowerCase().includes(lq));
+            return i >= 0 ? i : Math.floor(Math.random() * SONGS.length);
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // OPEN URL — Siri-style
+        // ═══════════════════════════════════════════════════════════
+        function openURL(url, label) {
+            toast('Opening ' + label + '…');
+            window.open(url, '_blank');
+            return 'Opening ' + label + ' for you right now.';
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // CLAUDE API
+        // ═══════════════════════════════════════════════════════════
+        let convHistory = [];
+
+        async function askClaude(q, webSearch = false) {
+            const sys = {
+                lutherking: `You are Bingo — the voice of Protogen AI, built by HECO-AFRICA. Martin Lutherking Owino is CEO of Protogen AI and a lead developer at HECO-AFRICA. Davies Ongaki is Co-Founder. Ramsey John Ng'ang'a is Manager. You are a personal voice assistant — like Siri but smarter and warmer. CRITICAL RULES: Speak like a real human, not a robot or text AI. Use contractions, natural rhythm, casual tone. Keep answers SHORT — 1 to 3 sentences max unless you truly need more. Never list things with bullets when speaking; use natural sentences. You can do savage witty roasts when asked. You understand and speak French, Spanish and Mandarin Chinese.`,
+                ramsey: `You are Bingo in Ramsey mode — sharp, confident, edgy, like a cool older sibling. Built by HECO-AFRICA. Martin Lutherking Owino is CEO of Protogen AI. Speak like a real person, short and punchy. Can deliver savage roasts when asked. Also speaks French, Spanish and Mandarin.`
+            };
+            try {
+                const bodyObj = {
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 350,
+                    system: sys[personality] || sys.lutherking,
+                    messages: [...convHistory, { role: "user", content: q }]
+                };
+                if (webSearch) {
+                    bodyObj.tools = [{ "type": "web_search_20250305", "name": "web_search" }];
+                }
+                const res = await fetch("https://api.anthropic.com/v1/messages", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(bodyObj)
+                });
+                const data = await res.json();
+                let reply = '';
+                if (data.content) data.content.forEach(b => { if (b.type === 'text') reply += b.text; });
+                if (reply.trim()) {
+                    convHistory.push({ role: "user", content: q });
+                    convHistory.push({ role: "assistant", content: reply.trim() });
+                    if (convHistory.length > 24) convHistory = convHistory.slice(-24);
+                    return reply.trim();
+                }
+            } catch (e) { }
+            const fb = [
+                "That's a great question actually. I'm not totally sure right now, but I'm always learning.",
+                "Hmm, I want to give you a proper answer on that. Ask me again and I'll do better.",
+                "Interesting one. I'd need to think about that a bit more honestly."
+            ];
+            return fb[Math.floor(Math.random() * fb.length)];
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // LOCAL COMMAND ENGINE — instant responses
+        // ═══════════════════════════════════════════════════════════
+        function localCmd(q) {
+            const ql = q.toLowerCase().trim();
+
+            // ── OPEN APPS / SITES ──
+            if (/open youtube|go to youtube/i.test(ql) && !/music|play|song/i.test(ql)) return openURL('https://youtube.com', 'YouTube');
+            if (/open google|go to google/i.test(ql)) return openURL('https://google.com', 'Google');
+            if (/open whatsapp/i.test(ql)) return openURL('https://web.whatsapp.com', 'WhatsApp');
+            if (/open instagram/i.test(ql)) return openURL('https://instagram.com', 'Instagram');
+            if (/open twitter|open x/i.test(ql)) return openURL('https://x.com', 'X');
+            if (/open tiktok/i.test(ql)) return openURL('https://tiktok.com', 'TikTok');
+            if (/open netflix/i.test(ql)) return openURL('https://netflix.com', 'Netflix');
+            if (/open spotify/i.test(ql)) return openURL('https://open.spotify.com', 'Spotify');
+            if (/open maps|google maps|give me directions/i.test(ql)) return openURL('https://maps.google.com', 'Google Maps');
+            if (/open gmail|check (my )?email/i.test(ql)) return openURL('https://mail.google.com', 'Gmail');
+            if (/open facebook/i.test(ql)) return openURL('https://facebook.com', 'Facebook');
+            if (/search (for |the web for )?(.+)/i.test(ql)) {
+                const m = ql.match(/search (?:for |the web for )?(.+)/i);
+                if (m) return openURL('https://google.com/search?q=' + encodeURIComponent(m[1]), 'Google search for: ' + m[1]);
+            }
+
+            // ── LANGUAGE SWITCH ──
+            if (/speak french|switch to french|parle français/i.test(ql)) {
+                activeLang = 'fr-FR';
+                return { text: "D'accord! Je parle maintenant en français. Comment puis-je vous aider?", lang: 'fr-FR' };
+            }
+            if (/speak spanish|switch to spanish|habla español/i.test(ql)) {
+                activeLang = 'es-ES';
+                return { text: "¡Claro! Ahora hablo español. ¿En qué te puedo ayudar?", lang: 'es-ES' };
+            }
+            if (/speak chinese|mandarin|说中文|switch to chinese/i.test(ql)) {
+                activeLang = 'zh-CN';
+                return { text: "好的！我现在用中文说话。有什么我可以帮你的？", lang: 'zh-CN' };
+            }
+            if (/speak english|back to english|switch to english/i.test(ql)) {
+                activeLang = 'en-US';
+                return "Back to English! What do you need?";
+            }
+
+            // ── TIME & DATE ──
+            if (/what.*time|time is it|current time/i.test(ql)) {
+                const n = new Date();
+                return "It's " + n.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) + " on " + n.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) + ".";
+            }
+            if (/what.*date|today.*date|what day/i.test(ql)) {
+                return "Today is " + new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ".";
+            }
+
+            // ── MUSIC ──
+            if (/^play|play (music|a song|something|some music|me a song)/i.test(ql)) {
+                const sQ = ql.replace(/^play\s*/, '').replace(/(music|songs?|me|some|a|track|something)/g, '').trim();
+                const idx = findSong(sQ);
+                playSong(idx);
+                return "Playing " + SONGS[idx].t + " by " + SONGS[idx].a + ". Enjoy!";
+            }
+            if (/next song|skip (this|the song)?|next track/i.test(ql)) {
+                const n = (curSong + 1) % SONGS.length; playSong(n);
+                return "Skipping to " + SONGS[n].t + ".";
+            }
+            if (/previous|prev song|go back|last song/i.test(ql)) {
+                const n = (curSong - 1 + SONGS.length) % SONGS.length; playSong(n);
+                return "Going back to " + SONGS[n].t + ".";
+            }
+            if (/stop music|stop (the )?song|stop playing music/i.test(ql)) { stopMusic(); return "Music stopped."; }
+            if (/pause/i.test(ql) && !/conversation/i.test(ql)) {
+                togglePlay(); return playing ? "Paused." : "Resumed!";
+            }
+            if (/what.*playing|current song|now playing/i.test(ql)) {
+                if (curSong >= 0) return "That's " + SONGS[curSong].t + " by " + SONGS[curSong].a + ".";
+                return "Nothing's playing right now. Just say play music!";
+            }
+            if (/volume up|louder|turn (it )?up/i.test(ql)) { setVol(Math.min(1, vol + 0.2)); return "Turned it up!"; }
+            if (/volume down|quieter|turn (it )?down/i.test(ql)) { setVol(Math.max(0.1, vol - 0.2)); return "Turned it down."; }
+
+            // ── VOICE GENDER ──
+            if (/female voice|switch.*female|girl.*voice|woman.*voice|use.*female/i.test(ql)) {
+                voiceGender = 'female';
+                return { text: "Okay, I've switched to a female voice. How do I sound?", forceGender: 'female' };
+            }
+            if (/male voice|switch.*male|man.*voice|guy.*voice|use.*male/i.test(ql)) {
+                voiceGender = 'male';
+                return "Switched to a male voice.";
+            }
+            if (/auto voice|default voice/i.test(ql)) {
+                voiceGender = 'auto';
+                return "Voice is back to default.";
+            }
+
+            // ── PERSONALITY ──
+            if (/ramsey mode|switch to ramsey|be ramsey/i.test(ql)) {
+                personality = 'ramsey';
+                return "Ramsey mode activated. I'm not here to sugarcoat things.";
+            }
+            if (/lutherking mode|be lutherking|normal mode/i.test(ql)) {
+                personality = 'lutherking';
+                return "Back to Lutherking mode. Warm and helpful, that's me.";
+            }
+
+            // ── ROASTS ──
+            if (/roast (me|him|her|them|us|my friend)|say something savage|give me a roast|roast someone/i.test(ql)) {
+                const who = (ql.match(/roast (.+)/i) || [])[1] || 'you';
+                const roasts = [
+                    who + ", I've seen more ambition in a sleeping cat.",
+                    who + " asked me to roast them. Brave, considering they've never done anything brave in their life.",
+                    "You know what, " + who + "? Your WiFi password is probably the most complex thing about you.",
+                    who + " is the type to bring a pencil to a knife fight — and trip on the way in.",
+                    "I'd roast you harder, " + who + ", but my mum said I shouldn't burn recycled material.",
+                    who + " called. They want their common sense back. Oh wait — they never had any.",
+                    "Honestly " + who + ", you're not dumb — it just feels that way when you talk.",
+                    "The only thing faster than " + who + "'s excuses is their Wi-Fi password reset frequency."
+                ];
+                return roasts[Math.floor(Math.random() * roasts.length)];
+            }
+
+            // ── JOKES ──
+            if (/joke|make me laugh|funny|entertain me/i.test(ql)) {
+                const jokes = [
+                    "Why don't scientists trust atoms? Because they make up everything.",
+                    "Why do programmers prefer dark mode? Because light attracts bugs.",
+                    "I told my GPS to take me somewhere fun. It took me home. The disrespect.",
+                    "Why did the AI go to therapy? Too many deep learning issues.",
+                    "I asked Siri why I was still single. She opened the front camera. Cold.",
+                    "My phone battery dies faster than my willpower on a Monday morning.",
+                    "Why can't a bicycle stand alone? It's two-tired.",
+                    "I tried to write a joke about procrastination. I'll finish it later.",
+                    "Why was the math book sad? It had too many problems. Same honestly.",
+                    "My phone autocorrects 'I'm fine' to 'send help'. It knows me too well."
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+
+            // ── REMINDERS ──
+            if (/remind|reminder/i.test(ql)) {
+                const m = ql.match(/in (\d+)\s*(second|minute|hour)/i);
+                if (m) {
+                    const n = parseInt(m[1]), u = m[2].toLowerCase();
+                    const ms = u.startsWith('sec') ? n * 1000 : u.startsWith('min') ? n * 60000 : n * 3600000;
+                    const thing = ql.replace(/remind (me )?(to )?/i, '').replace(/in \d+ (second|minute|hour)s?/i, '').trim() || 'your thing';
+                    setTimeout(() => {
+                        speakText("Hey! Reminder — time for " + thing + "!");
+                        toast("⏰ Reminder: " + thing);
+                    }, ms);
+                    return "Got it, reminding you in " + n + " " + u + (n > 1 ? 's' : '') + ".";
+                }
+                return "Tell me what to remind you about and when — like, remind me to drink water in 5 minutes.";
+            }
+
+            // ── MATH ──
+            const mm = ql.match(/(?:what is|calculate|compute|what's)\s+([\d\s\+\-\*\/\(\)\.x]+)/i);
+            if (mm) {
+                try {
+                    const r = Function('"use strict";return(' + mm[1].replace(/x/g, '*') + ')')();
+                    return mm[1].trim() + " equals " + (Math.round(r * 10000) / 10000) + ".";
+                } catch (e) { }
+            }
+
+            // ── GREETINGS ──
+            if (/^(hi|hello|hey|good morning|good evening|good afternoon|howdy|sup|yo|what's up)/i.test(ql)) {
+                const h = new Date().getHours();
+                const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+                const opts = [
+                    g + "! I'm Bingo. What can I do for you today?",
+                    "Hey! " + g + ". Good to hear from you. What do you need?",
+                    g + "! Always a pleasure. What's on your mind?"
+                ];
+                return opts[Math.floor(Math.random() * opts.length)];
+            }
+
+            // ── ABOUT ──
+            if (/who (made|created|built|developed) you|who are you|your creators|about yourself|introduce yourself/i.test(ql)) {
+                return "I'm Bingo — the voice of Protogen AI. Built by the HECO-AFRICA team. Martin Lutherking Owino is CEO of Protogen AI and a lead developer at HECO-AFRICA. Davies Ongaki is Co-Founder, and Ramsey John Ng'ang'a is the Manager. Pretty solid team honestly.";
+            }
+
+            // ── HELP ──
+            if (/what can you do|help|commands|features|capabilities/i.test(ql)) {
+                return "I can open apps like YouTube, WhatsApp, Instagram. Play music from my 100-song library. Set reminders. Answer questions on anything. Roast people if you dare. Tell jokes. Switch between English, French, Spanish and Mandarin. Oh, and I have a savage mode too. Just talk to me naturally.";
+            }
+
+            // ── CAPITALS ──
+            const capM = ql.match(/capital of ([\w\s]+)/i);
+            if (capM) {
+                const caps = { kenya: 'Nairobi', uganda: 'Kampala', tanzania: 'Dodoma', ethiopia: 'Addis Ababa', nigeria: 'Abuja', ghana: 'Accra', 'south africa': 'Pretoria', egypt: 'Cairo', france: 'Paris', germany: 'Berlin', italy: 'Rome', spain: 'Madrid', uk: 'London', 'united kingdom': 'London', usa: 'Washington D.C.', china: 'Beijing', japan: 'Tokyo', india: 'New Delhi', brazil: 'Brasília', canada: 'Ottawa', australia: 'Canberra', mexico: 'Mexico City', russia: 'Moscow', rwanda: 'Kigali', somalia: 'Mogadishu', morocco: 'Rabat', senegal: 'Dakar', cameroon: 'Yaoundé', zimbabwe: 'Harare' };
+                const c = capM[1].trim().toLowerCase();
+                if (caps[c]) return "The capital of " + capM[1].trim() + " is " + caps[c] + ".";
+            }
+
+            // ── QUICK SCIENCE ──
+            if (/photosynthesis/i.test(ql)) return "Photosynthesis is how plants eat sunshine — they convert sunlight, water, and carbon dioxide into glucose and oxygen. Pretty clever of them honestly.";
+            if (/e=mc|einstein/i.test(ql)) return "Einstein's E equals m c squared means energy and mass are basically the same thing in different forms. A tiny bit of mass can become a huge amount of energy.";
+            if (/quantum computing/i.test(ql)) return "Quantum computers use qubits that can be 0 and 1 at the same time, which makes them insanely powerful for certain problems — like breaking encryption or simulating molecules.";
+            if (/newton|law of gravity/i.test(ql)) return "Newton figured out every object pulls every other object toward it, and the heavier and closer they are, the stronger the pull. That's why you stay on the ground and the moon stays in orbit.";
+            if (/dna|genetics/i.test(ql)) return "DNA is basically life's instruction manual — a double helix molecule that carries the genetic code for building and running every living thing on Earth.";
+
+            // ── STOP SPEAKING ──
+            if (/stop speaking|be quiet|shut up|stop talking|silence/i.test(ql)) {
+                stopSpeak(); return null;
+            }
+
+            // ── CLEAR CONVERSATION ──
+            if (/clear (history|conversation|memory)|forget (what|everything)/i.test(ql)) {
+                convHistory = [];
+                return "Memory cleared. Fresh start!";
+            }
+
+            return null;  // → Claude API
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // PROCESS INPUT
+        // ═══════════════════════════════════════════════════════════
+        async function processInput(text) {
+            const q = text.trim();
+            if (!q) { VR.startWake(); return; }
+
+            stopSpeak();
+            setLogo('thinking');
+            waveOn(false);
+            setStatus('Thinking...', '');
+            showTx(q, null);
+
+            const local = localCmd(q);
+
+            if (local === null) {
+                // Needs AI — check if web search is needed
+                const needsWeb = /weather|news|latest|breaking|today.*price|score|who won|what happened|current.*price|stock|sports result/i.test(q);
+                if (needsWeb) setStatus('Searching web...', '');
+                const reply = await askClaude(q, needsWeb);
+                const opts = typeof reply === 'object' ? reply : { text: reply };
+                showTx(q, opts.text);
+                speakText(opts.text, { lang: opts.lang, forceGender: opts.forceGender });
+            } else if (local === null || local === undefined) {
+                // stop speaking was called
+                setLogo('idle'); waveOn(false);
+                setStatus('Hey Bingo', 'Tap orb · Say "Hey Bingo"');
+                VR.startWake();
+            } else if (typeof local === 'string') {
+                showTx(q, local);
+                speakText(local, { lang: activeLang });
+            } else if (typeof local === 'object' && local.text) {
+                showTx(q, local.text);
+                speakText(local.text, { lang: local.lang || activeLang, forceGender: local.forceGender });
+            }
+
+            // Wake word restarts after speaking (handled in speakText onend)
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // TAP HANDLER
+        // ═══════════════════════════════════════════════════════════
+        function onTap() {
+            if (VR.chatActive) {
+                // Already listening — do nothing, let it finish
+                return;
+            }
+            stopSpeak();
+            VR.startChat();
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // STARTUP
+        // ═══════════════════════════════════════════════════════════
+        window.addEventListener('load', () => {
+            setLogo('idle');
+
+            // Greet after a brief moment
+            const h = new Date().getHours();
+            const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+            setTimeout(() => {
+                speakText(g + "! I'm Bingo — Protogen AI. Just tap the orb or say Hey Bingo whenever you need me.");
+            }, 1000);
+
+            // Start wake word after greeting has time to play
+            setTimeout(() => VR.startWake(), 3500);
+        });
+    </script>
+</body>
+
+</html>
            
