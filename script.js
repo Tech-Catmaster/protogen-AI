@@ -1,288 +1,1490 @@
-// ═══════════════════════════════════════════════════════════
-// PROTOGEN AI — Voice-First Companion v2.0
-// DIRECT ANSWERS ONLY · No "look at new tab" messages
-// Wake word: "Bingo" · Martin is CEO of Protogen AI under HECO AFRICA
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+// PROTOGEN AI — BINGO VOICE ASSISTANT  V3.0
+// Wake word : "Bingo"
+// Created by: Martin Lutherking Owino — CEO, Protogen AI / HECO AFRICA
+// ═══════════════════════════════════════════════════════════════════════════
 
-// ═══════════════════════════════════════════════════════════
-// SONGS — 130 TRACKS (expanded)
-// ═══════════════════════════════════════════════════════════
+'use strict';
+
+// ══════════════════════════════════════════════════════
+//  SONGS
+// ══════════════════════════════════════════════════════
 const SONGS = [
-    { t: "Blinding Lights", a: "The Weeknd", g: "Pop", mood: "upbeat" },
-    { t: "Shape of You", a: "Ed Sheeran", g: "Pop", mood: "upbeat" },
-    { t: "Bohemian Rhapsody", a: "Queen", g: "Rock", mood: "epic" },
-    { t: "Uptown Funk", a: "Mark Ronson ft. Bruno Mars", g: "Pop", mood: "upbeat" },
-    { t: "Thinking Out Loud", a: "Ed Sheeran", g: "Pop", mood: "chill" },
-    { t: "Stay With Me", a: "Sam Smith", g: "Soul", mood: "sad" },
-    { t: "Rolling in the Deep", a: "Adele", g: "Soul", mood: "powerful" },
-    { t: "Someone Like You", a: "Adele", g: "Soul", mood: "sad" },
-    { t: "Perfect", a: "Ed Sheeran", g: "Pop", mood: "romantic" },
-    { t: "Levitating", a: "Dua Lipa", g: "Pop", mood: "upbeat" },
-    { t: "Dance Monkey", a: "Tones and I", g: "Pop", mood: "upbeat" },
-    { t: "Watermelon Sugar", a: "Harry Styles", g: "Pop", mood: "chill" },
-    { t: "Drivers License", a: "Olivia Rodrigo", g: "Pop", mood: "sad" },
-    { t: "Peaches", a: "Justin Bieber", g: "Pop", mood: "chill" },
-    { t: "Montero", a: "Lil Nas X", g: "Rap", mood: "upbeat" },
-    { t: "Good 4 U", a: "Olivia Rodrigo", g: "Pop Rock", mood: "upbeat" },
-    { t: "Bad Guy", a: "Billie Eilish", g: "Electropop", mood: "chill" },
-    { t: "Old Town Road", a: "Lil Nas X", g: "Country Rap", mood: "upbeat" },
-    { t: "Dynamite", a: "BTS", g: "K-Pop", mood: "upbeat" },
-    { t: "Butter", a: "BTS", g: "K-Pop", mood: "upbeat" },
-    { t: "As It Was", a: "Harry Styles", g: "Pop", mood: "chill" },
-    { t: "Easy On Me", a: "Adele", g: "Soul", mood: "sad" },
-    { t: "Stay", a: "The Kid LAROI & Justin Bieber", g: "Pop", mood: "upbeat" },
-    { t: "Industry Baby", a: "Lil Nas X & Jack Harlow", g: "Rap", mood: "upbeat" },
-    { t: "Heat Waves", a: "Glass Animals", g: "Indie", mood: "chill" },
-    { t: "Shivers", a: "Ed Sheeran", g: "Pop", mood: "upbeat" },
-    { t: "Love Story", a: "Taylor Swift", g: "Country Pop", mood: "romantic" },
-    { t: "Anti-Hero", a: "Taylor Swift", g: "Pop", mood: "chill" },
-    { t: "Shake It Off", a: "Taylor Swift", g: "Pop", mood: "upbeat" },
-    { t: "Blank Space", a: "Taylor Swift", g: "Pop", mood: "upbeat" },
-    { t: "Flowers", a: "Miley Cyrus", g: "Pop", mood: "upbeat" },
-    { t: "Unholy", a: "Sam Smith & Kim Petras", g: "Pop", mood: "upbeat" },
-    { t: "Creepin", a: "Metro Boomin & The Weeknd", g: "R&B", mood: "chill" },
-    { t: "Calm Down", a: "Rema & Selena Gomez", g: "Afrobeats", mood: "chill" },
-    { t: "Essence", a: "Wizkid ft. Tems", g: "Afrobeats", mood: "chill" },
-    { t: "Peru", a: "Fireboy DML & Ed Sheeran", g: "Afropop", mood: "upbeat" },
-    { t: "Sungba", a: "Asake", g: "Afrobeats", mood: "upbeat" },
-    { t: "Rush", a: "Ayra Starr", g: "Afropop", mood: "upbeat" },
-    { t: "Mnike", a: "Tyler ICU & Tumelo.za", g: "Amapiano", mood: "upbeat" },
-    { t: "Sere", a: "Omah Lay", g: "Afropop", mood: "chill" },
-    { t: "Overloading", a: "Burna Boy", g: "Afrobeats", mood: "upbeat" },
-    { t: "Last Last", a: "Burna Boy", g: "Afrobeats", mood: "sad" },
-    { t: "Ye", a: "Burna Boy", g: "Afrobeats", mood: "chill" },
-    { t: "Love Nwantiti", a: "CKay", g: "Afropop", mood: "romantic" },
-    { t: "Electricity", a: "Davido", g: "Afrobeats", mood: "upbeat" },
-    { t: "FEM", a: "Davido", g: "Afrobeats", mood: "upbeat" },
-    { t: "Soro Soke", a: "Olamide", g: "Afropop", mood: "upbeat" },
-    { t: "Finesse", a: "Pheelz & BNXN", g: "Afropop", mood: "upbeat" },
-    { t: "Jericho", a: "Rema", g: "Afrobeats", mood: "chill" },
-    { t: "Bounce", a: "Rema", g: "Afrobeats", mood: "upbeat" },
-    { t: "Midnight", a: "Tiwa Savage", g: "Afropop", mood: "romantic" },
-    { t: "Makeba", a: "Jain", g: "World", mood: "upbeat" },
-    { t: "Jerusalema", a: "Master KG ft. Nomcebo", g: "Gospel Afro", mood: "upbeat" },
-    { t: "Bambelela", a: "Various Artists", g: "Gospel", mood: "upbeat" },
-    { t: "Unavailable", a: "Davido ft. Musa Keys", g: "Amapiano", mood: "upbeat" },
-    { t: "Love Language", a: "Ludmilla", g: "Funk", mood: "upbeat" },
-    { t: "As Long As You Love Me", a: "Backstreet Boys", g: "Pop", mood: "romantic" },
-    { t: "I Want It That Way", a: "Backstreet Boys", g: "Pop", mood: "romantic" },
-    { t: "Billie Jean", a: "Michael Jackson", g: "Pop", mood: "upbeat" },
-    { t: "Thriller", a: "Michael Jackson", g: "Pop", mood: "epic" },
-    { t: "Beat It", a: "Michael Jackson", g: "Pop", mood: "upbeat" },
-    { t: "PYT", a: "Michael Jackson", g: "Pop", mood: "upbeat" },
-    { t: "Smooth Criminal", a: "Michael Jackson", g: "Pop", mood: "upbeat" },
-    { t: "Superstition", a: "Stevie Wonder", g: "Soul", mood: "upbeat" },
-    { t: "Isn't She Lovely", a: "Stevie Wonder", g: "Soul", mood: "romantic" },
-    { t: "Higher Ground", a: "Stevie Wonder", g: "Soul", mood: "upbeat" },
-    { t: "I Will Always Love You", a: "Whitney Houston", g: "R&B", mood: "romantic" },
-    { t: "Greatest Love of All", a: "Whitney Houston", g: "R&B", mood: "powerful" },
-    { t: "One Moment in Time", a: "Whitney Houston", g: "Pop", mood: "powerful" },
-    { t: "My Heart Will Go On", a: "Celine Dion", g: "Pop", mood: "sad" },
-    { t: "The Power of Love", a: "Celine Dion", g: "Pop", mood: "romantic" },
-    { t: "Killing Me Softly", a: "Fugees", g: "Hip-Hop", mood: "chill" },
-    { t: "Ready or Not", a: "Fugees", g: "Hip-Hop", mood: "chill" },
-    { t: "No Scrubs", a: "TLC", g: "R&B", mood: "upbeat" },
-    { t: "Waterfalls", a: "TLC", g: "R&B", mood: "chill" },
-    { t: "Creep", a: "TLC", g: "R&B", mood: "sad" },
-    { t: "Lose Yourself", a: "Eminem", g: "Rap", mood: "powerful" },
-    { t: "Stan", a: "Eminem", g: "Rap", mood: "powerful" },
-    { t: "Without Me", a: "Eminem", g: "Rap", mood: "upbeat" },
-    { t: "In Da Club", a: "50 Cent", g: "Rap", mood: "upbeat" },
-    { t: "Gold Digger", a: "Kanye West", g: "Hip-Hop", mood: "upbeat" },
-    { t: "HUMBLE.", a: "Kendrick Lamar", g: "Hip-Hop", mood: "powerful" },
-    { t: "DNA.", a: "Kendrick Lamar", g: "Hip-Hop", mood: "powerful" },
-    { t: "God's Plan", a: "Drake", g: "Hip-Hop", mood: "chill" },
-    { t: "One Dance", a: "Drake", g: "Dancehall", mood: "chill" },
-    { t: "Hotline Bling", a: "Drake", g: "R&B", mood: "chill" },
-    { t: "XO Tour Llif3", a: "Lil Uzi Vert", g: "Emo Rap", mood: "sad" },
-    { t: "Rockstar", a: "Post Malone ft. 21 Savage", g: "Rap", mood: "chill" },
-    { t: "Sunflower", a: "Post Malone & Swae Lee", g: "Pop", mood: "chill" },
-    { t: "Circles", a: "Post Malone", g: "Pop", mood: "sad" },
-    { t: "Savage Love", a: "Jawsh 685 & Jason Derulo", g: "Pop", mood: "upbeat" },
-    { t: "Take You Dancing", a: "Jason Derulo", g: "Pop", mood: "upbeat" },
-    { t: "Mood", a: "24kGoldn ft. iann dior", g: "Pop Rap", mood: "upbeat" },
-    { t: "Therefore I Am", a: "Billie Eilish", g: "Pop", mood: "chill" },
-    { t: "Happier Than Ever", a: "Billie Eilish", g: "Pop", mood: "powerful" },
-    { t: "positions", a: "Ariana Grande", g: "R&B", mood: "romantic" },
-    { t: "7 rings", a: "Ariana Grande", g: "Pop", mood: "upbeat" },
-    { t: "Thank U Next", a: "Ariana Grande", g: "Pop", mood: "upbeat" },
-    { t: "Rain On Me", a: "Lady Gaga & Ariana Grande", g: "Dance Pop", mood: "upbeat" },
-    { t: "Shallow", a: "Lady Gaga & Bradley Cooper", g: "Pop Rock", mood: "powerful" },
-    // New tracks
-    { t: "Cruel Summer", a: "Taylor Swift", g: "Pop", mood: "upbeat" },
-    { t: "Karma", a: "Taylor Swift", g: "Pop", mood: "upbeat" },
-    { t: "Midnight Rain", a: "Taylor Swift", g: "Pop", mood: "chill" },
-    { t: "Flowers (Remix)", a: "Miley Cyrus & Sia", g: "Pop", mood: "upbeat" },
-    { t: "Vampire", a: "Olivia Rodrigo", g: "Pop Rock", mood: "powerful" },
-    { t: "bad idea right?", a: "Olivia Rodrigo", g: "Pop Rock", mood: "upbeat" },
-    { t: "Ciao Adios", a: "Anne-Marie", g: "Pop", mood: "upbeat" },
-    { t: "Rockabye", a: "Clean Bandit ft. Anne-Marie", g: "Dance Pop", mood: "powerful" },
-    { t: "Afrobeats", a: "Adekunle Gold", g: "Afropop", mood: "chill" },
-    { t: "Pretty Girl", a: "Ayra Starr", g: "Afropop", mood: "chill" },
-    { t: "Soweto", a: "Victony", g: "Afropop", mood: "romantic" },
-    { t: "Celebrate", a: "Victony", g: "Afropop", mood: "upbeat" },
-    { t: "Angel", a: "Shallipopi", g: "Afropop", mood: "chill" },
-    { t: "Commas", a: "Asake", g: "Afrobeats", mood: "upbeat" },
-    { t: "Yoga", a: "Asake", g: "Afrobeats", mood: "upbeat" },
-    { t: "Doja", a: "Asake", g: "Afrobeats", mood: "upbeat" },
-    { t: "Rich Flex", a: "Drake & 21 Savage", g: "Hip-Hop", mood: "upbeat" },
-    { t: "Knife Talk", a: "Drake ft. 21 Savage", g: "Hip-Hop", mood: "powerful" },
-    { t: "Another Day in Paradise", a: "Phil Collins", g: "Pop", mood: "sad" },
-    { t: "In the Air Tonight", a: "Phil Collins", g: "Rock", mood: "powerful" },
-    { t: "Africa", a: "Toto", g: "Rock", mood: "epic" },
-    { t: "Eye of the Tiger", a: "Survivor", g: "Rock", mood: "powerful" },
-    { t: "Don't Stop Believin'", a: "Journey", g: "Rock", mood: "upbeat" },
-    { t: "Hotel California", a: "Eagles", g: "Rock", mood: "chill" },
-    { t: "Stairway to Heaven", a: "Led Zeppelin", g: "Rock", mood: "epic" },
-    { t: "Smells Like Teen Spirit", a: "Nirvana", g: "Rock", mood: "powerful" },
-    { t: "Wonderwall", a: "Oasis", g: "Rock", mood: "chill" },
-    { t: "Mr. Brightside", a: "The Killers", g: "Rock", mood: "upbeat" }
+    { t: "Blinding Lights",        a: "The Weeknd",         duration: 200 },
+    { t: "Shape of You",           a: "Ed Sheeran",         duration: 235 },
+    { t: "Bohemian Rhapsody",      a: "Queen",              duration: 355 },
+    { t: "Billie Jean",            a: "Michael Jackson",    duration: 293 },
+    { t: "Lose Yourself",          a: "Eminem",             duration: 326 },
+    { t: "Calm Down",              a: "Rema",               duration: 198 },
+    { t: "Watermelon Sugar",       a: "Harry Styles",       duration: 173 },
+    { t: "Flowers",                a: "Miley Cyrus",        duration: 200 },
+    { t: "Perfect",                a: "Ed Sheeran",         duration: 263 },
+    { t: "Levitating",             a: "Dua Lipa",           duration: 203 },
+    { t: "As It Was",              a: "Harry Styles",       duration: 167 },
+    { t: "Unholy",                 a: "Sam Smith",          duration: 156 },
+    { t: "Anti-Hero",              a: "Taylor Swift",       duration: 200 },
+    { t: "Cruel Summer",           a: "Taylor Swift",       duration: 178 },
+    { t: "Rich Flex",              a: "Drake & 21 Savage",  duration: 211 },
+    { t: "Golden Hour",            a: "JVKE",               duration: 209 },
+    { t: "Running Up That Hill",   a: "Kate Bush",          duration: 300 },
+    { t: "Heat Waves",             a: "Glass Animals",      duration: 238 },
+    { t: "Stay",                   a: "The Kid LAROI",      duration: 141 },
+    { t: "Peaches",                a: "Justin Bieber",      duration: 198 },
+    { t: "Montero",                a: "Lil Nas X",          duration: 137 },
+    { t: "Easy On Me",             a: "Adele",              duration: 224 }
 ];
 
-// ═══════════════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════════════
-let voiceGender = 'auto';
-let personality = 'lutherking';
-let activeLang = 'en-US';
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let activeLang    = 'en-US';
 let audioUnlocked = false;
+let curSong       = -1;
+let playing       = false;
+let songPos       = 0;
+let songDur       = 180;
+let progTmr       = null;
+let vol           = 0.8;
+let audioCtx      = null;
+let gainNode      = null;
+let shuffleMode   = false;
+let repeatMode    = false;
+let songHistory   = [];
+let isMobile      = /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-// Music
-let curSong = -1, playing = false, songPos = 0, songDur = 220, progTmr = null, vol = 0.8;
-let audioCtx = null, gainNode = null;
-let shuffleMode = false, repeatMode = false;
-let lastSong = -1;
-let songHistory = [];
+// ══════════════════════════════════════════════════════
+//  THESPORTSDB API  (free tier — no key)
+// ══════════════════════════════════════════════════════
+const API_BASE  = 'https://www.thesportsdb.com/api/v1/json/3';
+const TEAM_IDS  = {
+    'bayern munich': '133604',
+    'bayern':        '133604',
+    'liverpool':     '133602',
+    'arsenal':       '133616',
+    'manchester city': '133615',
+    'man city':      '133615',
+    'chelsea':       '133610',
+    'real madrid':   '133739',
+    'barcelona':     '133738',
+    'borussia dortmund': '133667',
+    'dortmund':      '133667',
+    'inter milan':   '133736',
+    'psg':           '133718'
+};
 
-// Timers & reminders
-let activeTimers = [];
+async function apiFetch(url) {
+    try {
+        const r = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        if (!r.ok) return null;
+        return await r.json();
+    } catch (e) {
+        return null;
+    }
+}
 
-// Trivia
-const triviaQuestions = [
-    { q: "What is the largest ocean?", a: "Pacific", choices: ["Atlantic", "Pacific", "Indian", "Arctic"] },
-    { q: "How many sides does a hexagon have?", a: "6", choices: ["5", "6", "7", "8"] },
-    { q: "What planet is called the Red Planet?", a: "Mars", choices: ["Venus", "Jupiter", "Mars", "Saturn"] },
-    { q: "Who painted the Mona Lisa?", a: "Leonardo da Vinci", choices: ["Michelangelo", "Raphael", "Leonardo da Vinci", "Picasso"] },
-    { q: "What is the chemical symbol for gold?", a: "Au", choices: ["Go", "Gd", "Au", "Ag"] },
-    { q: "How many bones are in the human body?", a: "206", choices: ["196", "206", "216", "226"] },
-    { q: "What is the fastest land animal?", a: "Cheetah", choices: ["Lion", "Horse", "Cheetah", "Greyhound"] },
-    { q: "In what year did World War II end?", a: "1945", choices: ["1942", "1943", "1944", "1945"] },
-    { q: "What is the capital of Australia?", a: "Canberra", choices: ["Sydney", "Melbourne", "Canberra", "Brisbane"] },
-    { q: "Who wrote Romeo and Juliet?", a: "Shakespeare", choices: ["Dickens", "Shakespeare", "Chaucer", "Marlowe"] }
+async function getLiveScores() {
+    const today = new Date().toISOString().split('T')[0];
+    const data  = await apiFetch(`${API_BASE}/eventsday.php?d=${today}&s=Soccer`);
+    if (data && data.events && data.events.length) return data.events;
+    return null;
+}
+
+async function getTeamInfo(teamName) {
+    const enc  = encodeURIComponent(teamName);
+    const data = await apiFetch(`${API_BASE}/searchteams.php?t=${enc}`);
+    if (data && data.teams && data.teams.length) return data.teams[0];
+    return null;
+}
+
+async function getPlayerInfo(playerName) {
+    const enc  = encodeURIComponent(playerName);
+    const data = await apiFetch(`${API_BASE}/searchplayers.php?p=${enc}`);
+    if (data && data.player && data.player.length) return data.player[0];
+    return null;
+}
+
+async function getTeamFixtures(teamName) {
+    const id = TEAM_IDS[teamName.toLowerCase()];
+    if (!id) return null;
+    const data = await apiFetch(`${API_BASE}/eventsnext.php?id=${id}`);
+    if (data && data.events && data.events.length) return data.events;
+    return null;
+}
+
+async function getLastResults(teamName) {
+    const id = TEAM_IDS[teamName.toLowerCase()];
+    if (!id) return null;
+    const data = await apiFetch(`${API_BASE}/eventslast.php?id=${id}`);
+    if (data && data.results && data.results.length) return data.results;
+    return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  FOOTBALL FALLBACK DATA  (2025-26 season)
+// ══════════════════════════════════════════════════════
+const FOOTBALL = {
+
+    bundesliga: [
+        { pos:1, team:"Bayern Munich",       p:28, w:23, d:4, l:1, gf:101, ga:27, pts:73 },
+        { pos:2, team:"Bayer Leverkusen",    p:28, w:18, d:6, l:4, gf: 64, ga:34, pts:60 },
+        { pos:3, team:"Borussia Dortmund",   p:28, w:16, d:5, l:7, gf: 57, ga:42, pts:53 },
+        { pos:4, team:"RB Leipzig",          p:28, w:14, d:6, l:8, gf: 52, ga:41, pts:48 },
+        { pos:5, team:"Eintracht Frankfurt", p:28, w:13, d:5, l:10,gf: 49, ga:46, pts:44 }
+    ],
+
+    premierLeague: [
+        { pos:1, team:"Liverpool",           p:31, w:23, d:6, l:2, gf:78, ga:30, pts:75 },
+        { pos:2, team:"Arsenal",             p:31, w:21, d:6, l:4, gf:65, ga:28, pts:69 },
+        { pos:3, team:"Manchester City",     p:31, w:18, d:5, l:8, gf:58, ga:38, pts:59 },
+        { pos:4, team:"Chelsea",             p:31, w:16, d:5, l:10,gf:55, ga:44, pts:53 },
+        { pos:5, team:"Newcastle United",    p:31, w:14, d:7, l:10,gf:48, ga:42, pts:49 }
+    ],
+
+    championsLeague: {
+        stage: "Quarter-Finals",
+        quarterFinals: [
+            { home:"Bayern Munich",  hScore:2, away:"Real Madrid",    aScore:1, leg:"1st Leg", date:"April 8, 2026" },
+            { home:"Inter Milan",    hScore:1, away:"Atletico Madrid", aScore:1, leg:"1st Leg", date:"April 8, 2026" },
+            { home:"Arsenal",        hScore:3, away:"PSG",            aScore:1, leg:"1st Leg", date:"April 9, 2026" },
+            { home:"Benfica",        hScore:0, away:"Dortmund",       aScore:2, leg:"1st Leg", date:"April 9, 2026" }
+        ],
+        secondLeg: [
+            { date:"April 15, 2026", home:"Real Madrid",       away:"Bayern Munich",  comp:"UCL QF 2nd Leg", time:"21:00 CET" },
+            { date:"April 16, 2026", home:"PSG",               away:"Arsenal",        comp:"UCL QF 2nd Leg", time:"21:00 CET" },
+            { date:"April 17, 2026", home:"Atletico Madrid",   away:"Inter Milan",    comp:"UCL QF 2nd Leg", time:"21:00 CET" },
+            { date:"April 17, 2026", home:"Borussia Dortmund", away:"Benfica",        comp:"UCL QF 2nd Leg", time:"21:00 CET" }
+        ],
+        eliminated: ["Liverpool (by PSG 4-0 agg)", "Chelsea", "Barcelona", "Manchester City"],
+        semiFinalDates: "April 29 – May 6, 2026",
+        final: { date: "May 30, 2026", venue: "Wembley Stadium, London" }
+    },
+
+    teams: {
+        bayernMunich: {
+            name:"FC Bayern Munich", country:"Germany", league:"Bundesliga",
+            position:1, played:28, won:23, drawn:4, lost:1,
+            goalsFor:101, goalsAgainst:27, points:73,
+            topScorer:"Harry Kane", topScorerGoals:34,
+            topAssist:"Jamal Musiala", topAssistCount:12,
+            nextMatch:{ opponent:"Borussia Dortmund", competition:"Bundesliga", date:"April 19, 2026", venue:"Allianz Arena", time:"17:30 CET" },
+            lastResult:{ opponent:"FC Augsburg", score:"3-0", result:"Win", date:"April 5, 2026", competition:"Bundesliga" },
+            manager:"Vincent Kompany", stadium:"Allianz Arena", capacity:75024, founded:1900,
+            keyPlayers:["Harry Kane","Jamal Musiala","Michael Olise","Joshua Kimmich","Manuel Neuer","Alphonso Davies","Leroy Sané"],
+            trophies:{ bundesliga:33, dfbPokal:20, championsLeague:6, clubWorldCup:2 },
+            colors:"Red and White", nickname:"Die Roten / FC Hollywood"
+        },
+        liverpool: {
+            name:"Liverpool FC", country:"England", league:"Premier League",
+            position:1, played:31, won:23, drawn:6, lost:2,
+            goalsFor:78, goalsAgainst:30, points:75,
+            topScorer:"Mohamed Salah", topScorerGoals:25,
+            topAssist:"Mohamed Salah", topAssistCount:14,
+            nextMatch:{ opponent:"West Ham United", competition:"Premier League", date:"April 19, 2026", venue:"London Stadium", time:"15:00 GMT" },
+            lastResult:{ opponent:"Fulham", score:"3-1", result:"Win", date:"April 5, 2026", competition:"Premier League" },
+            manager:"Arne Slot", stadium:"Anfield", capacity:61276, founded:1892,
+            keyPlayers:["Mohamed Salah","Darwin Núñez","Cody Gakpo","Virgil van Dijk","Alisson","Trent Alexander-Arnold","Luis Díaz"],
+            trophies:{ leagueTitles:19, faCup:8, leagueCup:10, championsLeague:6, uefaCup:3 },
+            colors:"Red", nickname:"The Reds / The Merseysiders"
+        }
+    },
+
+    players: {
+        messi: {
+            fullName:"Lionel Andres Messi", nationality:"Argentine",
+            dob:"June 24, 1987", age:38,
+            currentClub:"Inter Miami CF", position:"Forward",
+            goals:903, matches:1146, assists:385, ballonDor:7,
+            trophies:[
+                "7 Ballon d'Or (2009 2010 2011 2012 2015 2019 2021)",
+                "4 UEFA Champions League (2006 2009 2011 2015)",
+                "10 La Liga titles with Barcelona",
+                "1 FIFA World Cup (Qatar 2022)",
+                "3 Copa America (2021 2024 runner-up 2015)",
+                "1 Olympic Gold Medal (Beijing 2008)"
+            ],
+            records:[
+                "Most Ballon d'Or awards: 7",
+                "Most goals for a single club: 672 (Barcelona)",
+                "Most La Liga goals: 474",
+                "Most goals in a calendar year: 91 (2012)",
+                "All-time leading scorer for Argentina: 109 goals"
+            ],
+            goatStatus: true
+        },
+        ronaldo: {
+            fullName:"Cristiano Ronaldo dos Santos Aveiro", nationality:"Portuguese",
+            dob:"February 5, 1985", age:41,
+            currentClub:"Al Nassr (Saudi Arabia)", position:"Forward",
+            goals:967, matches:1313, assists:275, ballonDor:5,
+            trophies:[
+                "5 Ballon d'Or (2008 2013 2014 2016 2017)",
+                "5 UEFA Champions League (2008 2014 2016 2017 2018)",
+                "3 Premier League titles",
+                "2 La Liga titles",
+                "1 UEFA European Championship (Euro 2016)",
+                "1 UEFA Nations League (2019)"
+            ],
+            records:[
+                "Most career goals in football history: 967",
+                "Most Champions League goals: 140",
+                "Most international goals: 143",
+                "First player to score 100 international goals"
+            ]
+        }
+    },
+
+    upcomingFixtures: [
+        { date:"April 15, 2026", home:"Real Madrid",       away:"Bayern Munich",      comp:"UCL QF 2nd Leg",  time:"21:00 CET" },
+        { date:"April 16, 2026", home:"PSG",               away:"Arsenal",            comp:"UCL QF 2nd Leg",  time:"21:00 CET" },
+        { date:"April 17, 2026", home:"Atletico Madrid",   away:"Inter Milan",        comp:"UCL QF 2nd Leg",  time:"21:00 CET" },
+        { date:"April 17, 2026", home:"Borussia Dortmund", away:"Benfica",            comp:"UCL QF 2nd Leg",  time:"21:00 CET" },
+        { date:"April 19, 2026", home:"Liverpool",         away:"West Ham United",    comp:"Premier League",  time:"15:00 GMT" },
+        { date:"April 19, 2026", home:"Arsenal",           away:"Manchester City",    comp:"Premier League",  time:"16:30 GMT" },
+        { date:"April 19, 2026", home:"Bayern Munich",     away:"Borussia Dortmund",  comp:"Bundesliga",      time:"17:30 CET" }
+    ],
+
+    recentResults: [
+        { date:"April 8, 2026",  home:"Bayern Munich", hScore:2, away:"Real Madrid",  aScore:1, comp:"UCL QF 1st Leg" },
+        { date:"April 9, 2026",  home:"Arsenal",       hScore:3, away:"PSG",          aScore:1, comp:"UCL QF 1st Leg" },
+        { date:"April 5, 2026",  home:"Bayern Munich", hScore:3, away:"FC Augsburg",  aScore:0, comp:"Bundesliga" },
+        { date:"April 5, 2026",  home:"Fulham",        hScore:1, away:"Liverpool",    aScore:3, comp:"Premier League" },
+        { date:"April 4, 2026",  home:"Arsenal",       hScore:2, away:"Chelsea",      aScore:1, comp:"Premier League" },
+        { date:"April 3, 2026",  home:"Man City",      hScore:0, away:"Newcastle",    aScore:1, comp:"Premier League" }
+    ],
+
+    news: [
+        "Bayern Munich edge Real Madrid 2-1 in Champions League quarter-final first leg at Allianz Arena",
+        "Arsenal stun PSG 3-1 at the Emirates in Champions League quarter-final",
+        "Liverpool lead Premier League with 75 points — 6 points clear of Arsenal",
+        "Harry Kane scores hat-trick to bring his Bundesliga tally to 34 goals this season",
+        "Lionel Messi continues to defy age at 38 for Inter Miami in MLS",
+        "Cristiano Ronaldo scores milestone 967th career goal for Al Nassr",
+        "World Cup 2026 ticket sales open — USA Canada and Mexico await 48 nations"
+    ],
+
+    worldCup2026: {
+        hosts:["United States","Canada","Mexico"],
+        startDate:"June 11, 2026",
+        finalDate:"July 19, 2026",
+        teams:48, groups:12,
+        finalVenue:"MetLife Stadium, New Jersey, USA",
+        defending:"Argentina (Qatar 2022)",
+        notable:"First World Cup with 48 teams and 3 co-hosts"
+    }
+};
+
+// ══════════════════════════════════════════════════════
+//  GEOGRAPHY
+// ══════════════════════════════════════════════════════
+const GEOGRAPHY = {
+    capitals: {
+        kenya:"Nairobi", nigeria:"Abuja",
+        "south africa":"Pretoria (executive), Cape Town (legislative), Bloemfontein (judicial)",
+        ghana:"Accra", ethiopia:"Addis Ababa", egypt:"Cairo", tanzania:"Dodoma",
+        uganda:"Kampala", zimbabwe:"Harare", zambia:"Lusaka", mozambique:"Maputo",
+        angola:"Luanda", cameroon:"Yaounde", senegal:"Dakar", mali:"Bamako",
+        "ivory coast":"Yamoussoukro", somalia:"Mogadishu", sudan:"Khartoum",
+        rwanda:"Kigali", burundi:"Gitega", malawi:"Lilongwe", botswana:"Gaborone",
+        namibia:"Windhoek", "sierra leone":"Freetown", liberia:"Monrovia",
+        togo:"Lome", benin:"Porto-Novo", niger:"Niamey", chad:"N'Djamena",
+        "central african republic":"Bangui", madagascar:"Antananarivo",
+        france:"Paris", germany:"Berlin", italy:"Rome", spain:"Madrid",
+        portugal:"Lisbon", "united kingdom":"London", netherlands:"Amsterdam",
+        belgium:"Brussels", switzerland:"Bern", austria:"Vienna", sweden:"Stockholm",
+        norway:"Oslo", denmark:"Copenhagen", finland:"Helsinki", poland:"Warsaw",
+        "czech republic":"Prague", hungary:"Budapest", greece:"Athens",
+        ukraine:"Kyiv", romania:"Bucharest", russia:"Moscow",
+        usa:"Washington D.C.", "united states":"Washington D.C.", canada:"Ottawa",
+        mexico:"Mexico City", brazil:"Brasilia", argentina:"Buenos Aires",
+        colombia:"Bogota", chile:"Santiago", peru:"Lima", venezuela:"Caracas",
+        ecuador:"Quito", bolivia:"Sucre and La Paz",
+        china:"Beijing", japan:"Tokyo", india:"New Delhi", "south korea":"Seoul",
+        "north korea":"Pyongyang", indonesia:"Jakarta", philippines:"Manila",
+        vietnam:"Hanoi", thailand:"Bangkok", malaysia:"Kuala Lumpur",
+        singapore:"Singapore", pakistan:"Islamabad", bangladesh:"Dhaka",
+        "saudi arabia":"Riyadh", iran:"Tehran", iraq:"Baghdad",
+        israel:"Jerusalem", jordan:"Amman", turkey:"Ankara", afghanistan:"Kabul",
+        australia:"Canberra", "new zealand":"Wellington"
+    },
+    facts: {
+        largestCountry:   "Russia (17.1 million km squared)",
+        smallestCountry:  "Vatican City (0.44 km squared)",
+        longestRiver:     "Nile River (6,650 km) in Africa",
+        largestOcean:     "Pacific Ocean (165.25 million km squared)",
+        highestMountain:  "Mount Everest (8,849 m) in Nepal and Tibet",
+        largestDesert:    "Antarctic Desert (14.2 million km squared) — Sahara is the largest hot desert at 9.2 million km squared",
+        largestRainforest:"Amazon Rainforest, South America (5.5 million km squared)",
+        greatWall:        "The Great Wall of China stretches approximately 21,196 km",
+        deepestOcean:     "Mariana Trench (11,034 m deep) in the Pacific Ocean"
+    }
+};
+
+// ══════════════════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════════════════
+const HISTORY = {
+    ww1:               "World War 1 (1914-1918): Triggered by the assassination of Archduke Franz Ferdinand. Allied Powers — France, UK, Russia, USA — vs Central Powers — Germany, Austria-Hungary, Ottoman Empire. Over 20 million deaths. Ended with the Treaty of Versailles.",
+    ww2:               "World War 2 (1939-1945): The largest conflict in history. Allies — UK, USA, USSR, France — vs Axis — Nazi Germany, Italy, Japan. Started with Germany's invasion of Poland. Over 70 million casualties. Ended May 1945 in Europe and September 1945 in the Pacific.",
+    coldWar:           "The Cold War (1947-1991): Geopolitical tension between the USA and USSR after WW2. Featured the Space Race, nuclear arms race, Korean War, Vietnam War and Cuban Missile Crisis. Ended with the dissolution of the Soviet Union in 1991.",
+    ancientEgypt:      "Ancient Egypt (3100-30 BC): One of the world's earliest civilisations on the Nile. Built the pyramids, developed hieroglyphics and worshipped pharaohs as gods. Cleopatra was the last pharaoh before Roman conquest.",
+    romanEmpire:       "The Roman Empire (27 BC - 476 AD): Dominated the Mediterranean world. Spread Latin, Roman law and Christianity. Notable emperors include Julius Caesar, Augustus, Nero and Constantine.",
+    renaissance:       "The Renaissance (14th-17th century): Cultural and intellectual rebirth in Europe. Masters like Leonardo da Vinci, Michelangelo and Raphael thrived. Science, art and philosophy were revolutionised.",
+    frenchRevolution:  "The French Revolution (1789-1799): Overthrew the French monarchy. Ideals of Liberte, Egalite, Fraternite. Led to the rise of Napoleon Bonaparte.",
+    industrialRevolution:"The Industrial Revolution (1760-1840): Began in Britain. Steam power, factories and machinery transformed society from agricultural to industrial.",
+    martinLutherKing:  "Martin Luther King Jr. (1929-1968): American civil rights leader. Led the 1963 March on Washington and delivered his famous 'I Have a Dream' speech. Nobel Peace Prize 1964. Assassinated April 4, 1968.",
+    nelsonMandela:     "Nelson Mandela (1918-2013): South African anti-apartheid activist. Imprisoned for 27 years. Became South Africa's first Black president 1994-1999. Nobel Peace Prize 1993.",
+    gandhiMahatma:     "Mahatma Gandhi (1869-1948): Led India's non-violent independence movement against British rule. Championed civil disobedience. India gained independence in 1947. Assassinated January 30, 1948.",
+    kenyaIndependence: "Kenya gained independence on December 12, 1963, from British colonial rule. Jomo Kenyatta became the first Prime Minister and later the first President of Kenya. This day is celebrated as Jamhuri Day.",
+    columbusAmerica:   "Christopher Columbus reached the Americas in 1492, sailing for the Spanish Crown. He landed in the Caribbean on October 12, 1492.",
+    moonLanding:       "Apollo 11 landed on the Moon on July 20, 1969. Neil Armstrong became the first human to walk on the lunar surface, saying 'That's one small step for man, one giant leap for mankind.'"
+};
+
+// ══════════════════════════════════════════════════════
+//  TIME & DATE  (always uses new Date())
+// ══════════════════════════════════════════════════════
+function getCurrentTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true });
+    const dateStr = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    return `The current time is ${timeStr}. Today is ${dateStr}.`;
+}
+
+function getCurrentDate() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    return `Today is ${dateStr}.`;
+}
+
+// ══════════════════════════════════════════════════════
+//  MATH SOLVER
+// ══════════════════════════════════════════════════════
+function solveMath(question) {
+    const q = question.toLowerCase().trim();
+
+    // Percentage: "15% of 340"
+    let m = q.match(/(\d+\.?\d*)\s*%\s*of\s*(\d+\.?\d*)/);
+    if (m) {
+        const pct = parseFloat(m[1]), total = parseFloat(m[2]);
+        return `${pct}% of ${total} = ${(pct / 100) * total}`;
+    }
+
+    // Square root
+    m = q.match(/square\s*root\s*of\s*(\d+\.?\d*)|sqrt\s*\(?\s*(\d+\.?\d*)\s*\)?/);
+    if (m) {
+        const n = parseFloat(m[1] || m[2]);
+        return `Square root of ${n} = ${Math.sqrt(n)}`;
+    }
+
+    // Cube root
+    m = q.match(/cube\s*root\s*of\s*(\d+\.?\d*)/);
+    if (m) {
+        const n = parseFloat(m[1]);
+        return `Cube root of ${n} = ${parseFloat(Math.cbrt(n).toFixed(6))}`;
+    }
+
+    // Power: "2 to the power of 10" or "2^10"
+    m = q.match(/(\d+\.?\d*)\s*(?:to\s*the\s*power\s*of|raised\s*to|\^)\s*(\d+\.?\d*)/);
+    if (m) {
+        const base = parseFloat(m[1]), exp = parseFloat(m[2]);
+        return `${base} to the power of ${exp} = ${Math.pow(base, exp)}`;
+    }
+
+    // Factorial: "5 factorial" or "5!"
+    m = q.match(/(\d+)\s*!|(\d+)\s*factorial/);
+    if (m) {
+        const n = parseInt(m[1] || m[2]);
+        if (n > 20) return `${n}! is a very large number — use a scientific calculator for factorials above 20.`;
+        let f = 1;
+        for (let i = 2; i <= n; i++) f *= i;
+        return `${n}! = ${f}`;
+    }
+
+    // Trigonometry: sin, cos, tan
+    m = q.match(/\b(sin|cos|tan)\s*\(?\s*(\d+\.?\d*)\s*°?\s*\)?/);
+    if (m) {
+        const fn = m[1], deg = parseFloat(m[2]);
+        const rad = deg * Math.PI / 180;
+        const result = fn === 'sin' ? Math.sin(rad) : fn === 'cos' ? Math.cos(rad) : Math.tan(rad);
+        return `${fn}(${deg} degrees) = ${parseFloat(result.toFixed(8))}`;
+    }
+
+    // Inverse trig: asin, acos, atan
+    m = q.match(/\b(asin|arcsin|acos|arccos|atan|arctan)\s*\(?\s*(\d+\.?\d*)\s*\)?/);
+    if (m) {
+        const fn = m[1].replace('arc',''), n = parseFloat(m[2]);
+        const r = fn === 'sin' ? Math.asin(n) : fn === 'cos' ? Math.acos(n) : Math.atan(n);
+        return `${m[1]}(${n}) = ${parseFloat((r * 180 / Math.PI).toFixed(6))} degrees`;
+    }
+
+    // Natural log
+    m = q.match(/\bln\s*\(?\s*(\d+\.?\d*)\s*\)?/);
+    if (m) return `ln(${m[1]}) = ${parseFloat(Math.log(parseFloat(m[1])).toFixed(8))}`;
+
+    // Log base 10
+    m = q.match(/\blog\s*\(?\s*(\d+\.?\d*)\s*\)?/);
+    if (m) return `log(${m[1]}) = ${parseFloat(Math.log10(parseFloat(m[1])).toFixed(8))}`;
+
+    // Derivative: "derivative of x^n"
+    m = q.match(/derivative\s+of\s+x\s*\^?\s*(\d+)/);
+    if (m) {
+        const n = parseInt(m[1]);
+        if (n === 1) return `d/dx(x) = 1`;
+        return `d/dx(x^${n}) = ${n}x^${n - 1}`;
+    }
+
+    // Integral: "integral of x^n"
+    m = q.match(/integral\s+of\s+x\s*\^?\s*(\d+)/);
+    if (m) {
+        const n = parseInt(m[1]);
+        return `Integral of x^${n} dx = x^${n + 1}/${n + 1} + C`;
+    }
+
+    // Quadratic: ax^2 + bx + c = 0  (handles x^2 or x2 or x squared)
+    m = q.match(/(\d*\.?\d*)\s*x[\^²2]\s*([+\-]\s*\d+\.?\d*)\s*x\s*([+\-]\s*\d+\.?\d*)\s*=\s*0/);
+    if (m) {
+        const a = m[1] === '' || m[1] === '0' ? 1 : parseFloat(m[1]);
+        const b = parseFloat(m[2].replace(/\s/g,''));
+        const c = parseFloat(m[3].replace(/\s/g,''));
+        const disc = b * b - 4 * a * c;
+        if (disc < 0) return `The equation has no real solutions (discriminant = ${disc} < 0).`;
+        const x1 = parseFloat(((-b + Math.sqrt(disc)) / (2 * a)).toFixed(6));
+        const x2 = parseFloat(((-b - Math.sqrt(disc)) / (2 * a)).toFixed(6));
+        return x1 === x2
+            ? `x = ${x1} (one repeated root)`
+            : `x = ${x1} or x = ${x2}`;
+    }
+
+    // Linear: ax + b = c  or  ax - b = c
+    m = q.match(/(\d*\.?\d*)\s*x\s*([+\-])\s*(\d+\.?\d*)\s*=\s*(\d+\.?\d*)/);
+    if (m) {
+        const a    = m[1] === '' || m[1] === '0' ? 1 : parseFloat(m[1]);
+        const sign = m[2] === '+' ? 1 : -1;
+        const b    = sign * parseFloat(m[3]);
+        const c    = parseFloat(m[4]);
+        return `x = ${parseFloat(((c - b) / a).toFixed(6))}`;
+    }
+
+    // Simple x = something
+    m = q.match(/(\d*\.?\d*)\s*x\s*=\s*(\d+\.?\d*)/);
+    if (m) {
+        const a = parseFloat(m[1]) || 1, c = parseFloat(m[2]);
+        return `x = ${parseFloat((c / a).toFixed(6))}`;
+    }
+
+    // Basic arithmetic: handles numbers with operators
+    m = q.match(/(\d+\.?\d*)\s*([\+\-\*\/x×÷])\s*(\d+\.?\d*)/);
+    if (m) {
+        const a = parseFloat(m[1]), b = parseFloat(m[3]), op = m[2];
+        if (op === '+')                       return `${a} + ${b} = ${a + b}`;
+        if (op === '-')                       return `${a} - ${b} = ${a - b}`;
+        if (op === '*' || op === 'x' || op === '×') return `${a} x ${b} = ${a * b}`;
+        if (op === '/' || op === '÷') {
+            if (b === 0) return "Cannot divide by zero.";
+            return `${a} divided by ${b} = ${parseFloat((a / b).toFixed(8))}`;
+        }
+    }
+
+    // Absolute value
+    m = q.match(/absolute\s*value\s*of\s*(-?\d+\.?\d*)/);
+    if (m) return `|${m[1]}| = ${Math.abs(parseFloat(m[1]))}`;
+
+    // Modulo / remainder
+    m = q.match(/(\d+\.?\d*)\s*(?:mod|modulo|remainder.*divided.*by)\s*(\d+\.?\d*)/);
+    if (m) return `${m[1]} mod ${m[2]} = ${parseFloat(m[1]) % parseFloat(m[2])}`;
+
+    return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  PHYSICS SOLVER
+// ══════════════════════════════════════════════════════
+function solvePhysics(question) {
+    const q = question.toLowerCase();
+    const nums = [];
+    const rx = /(\d+\.?\d*)/g;
+    let nm;
+    while ((nm = rx.exec(q)) !== null) nums.push(parseFloat(nm[1]));
+    if (nums.length < 2) return null;
+
+    const n = (i) => nums[i] !== undefined ? nums[i] : 0;
+
+    if (q.includes('force') && (q.includes('mass') || q.includes('kg')) && (q.includes('acceleration') || q.includes('m/s')))
+        return `Force: F = m x a = ${n(0)} kg x ${n(1)} m/s2 = ${n(0) * n(1)} Newtons`;
+
+    if (q.includes('kinetic energy'))
+        return `Kinetic Energy: KE = 0.5 x m x v2 = 0.5 x ${n(0)} x ${n(1)}2 = ${0.5 * n(0) * n(1) * n(1)} Joules`;
+
+    if (q.includes('potential energy')) {
+        const g = 9.81;
+        return `Potential Energy: PE = m x g x h = ${n(0)} x ${g} x ${n(1)} = ${parseFloat((n(0) * g * n(1)).toFixed(3))} Joules`;
+    }
+
+    if (q.includes('ohm') || (q.includes('voltage') && q.includes('resistance')))
+        return `Ohm's Law: V = I x R = ${n(0)} A x ${n(1)} Ohms = ${n(0) * n(1)} Volts`;
+
+    if (q.includes('velocity') && q.includes('acceleration') && q.includes('time'))
+        return `Velocity: v = u + at = ${n(0)} + (${n(1)} x ${n(2)}) = ${n(0) + n(1) * n(2)} m/s`;
+
+    if (q.includes('work') && (q.includes('force') || q.includes('distance')))
+        return `Work: W = F x d = ${n(0)} N x ${n(1)} m = ${n(0) * n(1)} Joules`;
+
+    if (q.includes('power') && q.includes('time'))
+        return `Power: P = W / t = ${n(0)} J divided by ${n(1)} s = ${parseFloat((n(0) / n(1)).toFixed(4))} Watts`;
+
+    if (q.includes('momentum'))
+        return `Momentum: p = m x v = ${n(0)} kg x ${n(1)} m/s = ${n(0) * n(1)} kg m/s`;
+
+    if (q.includes('pressure') && (q.includes('force') || q.includes('area')))
+        return `Pressure: P = F / A = ${n(0)} N divided by ${n(1)} m2 = ${parseFloat((n(0) / n(1)).toFixed(4))} Pascals`;
+
+    if (q.match(/wave.*speed|speed.*wave|wavelength.*frequency/))
+        return `Wave speed: v = f x lambda = ${n(0)} Hz x ${n(1)} m = ${n(0) * n(1)} m/s`;
+
+    if (q.includes('gravitational') && q.includes('acceleration'))
+        return `Acceleration due to gravity on Earth is 9.81 m/s squared.`;
+
+    if (q.match(/density.*mass.*volume|density/))
+        return `Density: rho = m / V = ${n(0)} kg divided by ${n(1)} m3 = ${parseFloat((n(0) / n(1)).toFixed(4))} kg/m3`;
+
+    return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  UNIT CONVERTER
+// ══════════════════════════════════════════════════════
+function convertUnits(question) {
+    const q = question.toLowerCase();
+    const nm = q.match(/(\d+\.?\d*)/);
+    if (!nm) return null;
+    const n = parseFloat(nm[1]);
+
+    // Temperature
+    if (q.match(/celsius.*fahrenheit|°c.*°f|c to f/))   return `${n} degrees Celsius = ${parseFloat((n * 9/5 + 32).toFixed(2))} degrees Fahrenheit`;
+    if (q.match(/fahrenheit.*celsius|°f.*°c|f to c/))   return `${n} degrees Fahrenheit = ${parseFloat(((n - 32) * 5/9).toFixed(2))} degrees Celsius`;
+    if (q.match(/celsius.*kelvin|c to k/))               return `${n} degrees Celsius = ${parseFloat((n + 273.15).toFixed(2))} Kelvin`;
+    if (q.match(/kelvin.*celsius|k to c/))               return `${n} Kelvin = ${parseFloat((n - 273.15).toFixed(2))} degrees Celsius`;
+    if (q.match(/fahrenheit.*kelvin|f to k/))            return `${n} degrees Fahrenheit = ${parseFloat(((n - 32) * 5/9 + 273.15).toFixed(2))} Kelvin`;
+
+    // Distance
+    if (q.match(/km.*miles?|kilometres?.*miles?/))       return `${n} km = ${parseFloat((n * 0.621371).toFixed(4))} miles`;
+    if (q.match(/miles?.*km/))                           return `${n} miles = ${parseFloat((n * 1.60934).toFixed(4))} km`;
+    if (q.match(/meters?.*feet|m.*ft/))                  return `${n} meters = ${parseFloat((n * 3.28084).toFixed(4))} feet`;
+    if (q.match(/feet.*meters?|ft.*m/))                  return `${n} feet = ${parseFloat((n * 0.3048).toFixed(4))} meters`;
+    if (q.match(/cm.*inches?/))                          return `${n} cm = ${parseFloat((n * 0.393701).toFixed(4))} inches`;
+    if (q.match(/inches?.*cm/))                          return `${n} inches = ${parseFloat((n * 2.54).toFixed(4))} cm`;
+    if (q.match(/meters?.*yards?/))                      return `${n} meters = ${parseFloat((n * 1.09361).toFixed(4))} yards`;
+    if (q.match(/yards?.*meters?/))                      return `${n} yards = ${parseFloat((n * 0.9144).toFixed(4))} meters`;
+    if (q.match(/light.*year/))                          return `${n} light year(s) = ${parseFloat((n * 9.461e12).toExponential(4))} km`;
+
+    // Weight
+    if (q.match(/kg.*lbs?|kilograms?.*pounds?/))         return `${n} kg = ${parseFloat((n * 2.20462).toFixed(4))} lbs`;
+    if (q.match(/lbs?.*kg|pounds?.*kg/))                 return `${n} lbs = ${parseFloat((n * 0.453592).toFixed(4))} kg`;
+    if (q.match(/grams?.*ounces?|g.*oz/))                return `${n} g = ${parseFloat((n * 0.035274).toFixed(4))} oz`;
+    if (q.match(/ounces?.*grams?|oz.*g/))                return `${n} oz = ${parseFloat((n * 28.3495).toFixed(4))} g`;
+    if (q.match(/tonnes?.*kg/))                          return `${n} tonne(s) = ${n * 1000} kg`;
+    if (q.match(/kg.*tonnes?/))                          return `${n} kg = ${n / 1000} tonnes`;
+
+    // Volume
+    if (q.match(/liters?.*gallons?|l.*gal/))             return `${n} L = ${parseFloat((n * 0.264172).toFixed(4))} gallons`;
+    if (q.match(/gallons?.*liters?|gal.*l/))             return `${n} gallons = ${parseFloat((n * 3.78541).toFixed(4))} L`;
+    if (q.match(/ml.*cups?/))                            return `${n} ml = ${parseFloat((n * 0.00422675).toFixed(6))} cups`;
+    if (q.match(/cups?.*ml/))                            return `${n} cups = ${parseFloat((n * 236.588).toFixed(2))} ml`;
+    if (q.match(/liters?.*ml|l.*ml/))                   return `${n} L = ${n * 1000} ml`;
+    if (q.match(/ml.*liters?|ml.*l\b/))                 return `${n} ml = ${n / 1000} L`;
+
+    // Speed
+    if (q.match(/mph.*km\/h|mph.*kmh/))                  return `${n} mph = ${parseFloat((n * 1.60934).toFixed(4))} km/h`;
+    if (q.match(/km\/h.*mph|kmh.*mph/))                  return `${n} km/h = ${parseFloat((n * 0.621371).toFixed(4))} mph`;
+    if (q.match(/m\/s.*km\/h/))                          return `${n} m/s = ${parseFloat((n * 3.6).toFixed(4))} km/h`;
+    if (q.match(/km\/h.*m\/s/))                          return `${n} km/h = ${parseFloat((n / 3.6).toFixed(4))} m/s`;
+    if (q.match(/knots?.*km\/h/))                        return `${n} knots = ${parseFloat((n * 1.852).toFixed(4))} km/h`;
+
+    // Data
+    if (q.match(/mb.*gb/))   return `${n} MB = ${parseFloat((n / 1024).toFixed(6))} GB`;
+    if (q.match(/gb.*tb/))   return `${n} GB = ${parseFloat((n / 1024).toFixed(6))} TB`;
+    if (q.match(/gb.*mb/))   return `${n} GB = ${n * 1024} MB`;
+    if (q.match(/tb.*gb/))   return `${n} TB = ${n * 1024} GB`;
+    if (q.match(/kb.*mb/))   return `${n} KB = ${parseFloat((n / 1024).toFixed(6))} MB`;
+    if (q.match(/mb.*kb/))   return `${n} MB = ${n * 1024} KB`;
+    if (q.match(/bytes?.*kb/)) return `${n} bytes = ${parseFloat((n / 1024).toFixed(6))} KB`;
+
+    // Currency hint (no live rates)
+    if (q.match(/ksh.*usd|kenya.*dollar|shilling.*dollar/))
+        return "I don't have live exchange rates. As of early 2026 approximately 130 Kenyan Shillings equal 1 US Dollar — check a currency app for real-time rates.";
+    if (q.match(/usd.*ksh|dollar.*shilling/))
+        return "I don't have live exchange rates. As of early 2026 approximately 1 US Dollar equals 130 Kenyan Shillings — check a currency app for real-time rates.";
+
+    return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  JOKES / ROASTS / COMPLIMENTS
+// ══════════════════════════════════════════════════════
+const JOKES = [
+    "Why don't scientists trust atoms? Because they make up everything!",
+    "Why did the math book look so sad? It had too many problems.",
+    "What do you call a fake noodle? An impasta!",
+    "Why did the AI go to therapy? Too many deep learning issues.",
+    "I told my computer I needed a break. Now it won't stop sending me Kit-Kat ads.",
+    "Why do programmers prefer dark mode? Because light attracts bugs!",
+    "What do you call a bear with no teeth? A gummy bear!",
+    "Why can't you trust a ladder? It's always up to something.",
+    "I asked Siri why I'm still single. She opened the front-facing camera.",
+    "Why don't footballers use computers? Because they're afraid of the net!",
+    "What do Harry Kane and a clock have in common? They both always hit the top corner!",
+    "Why was the football pitch wet? Because the players kept dribbling!",
+    "I told my dog he was adopted. He said he already knew — his tail never matched the family.",
+    "What do you call a sleeping dinosaur? A dino-snore!"
 ];
-let triviaActive = false, triviaIdx = -1, triviaScore = 0, triviaTotal = 0;
 
-// Responsive detection
-let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const ROASTS = [
+    "You're like a software update — I see you, but I'm not sure I need you.",
+    "I'd explain it to you, but I left my crayons at home.",
+    "Your secrets are safe with me. I never listen anyway.",
+    "You're not stupid. You just have bad luck thinking.",
+    "I'm not saying you're lazy, but you could trip over a cordless phone.",
+    "You're the reason shampoo bottles have instructions.",
+    "I'm jealous of people who haven't met you yet.",
+    "You're like a cloud — when you disappear, it's a beautiful day!"
+];
 
-// ═══════════════════════════════════════════════════════════
-// UNLOCK AUDIO FOR CHROME
-// ═══════════════════════════════════════════════════════════
+const COMPLIMENTS = [
+    "You're the kind of person who makes the world better just by being in it.",
+    "Smart people ask questions. That's exactly what you're doing!",
+    "You have a brilliant mind. Keep learning and growing!",
+    "Your curiosity is one of your greatest strengths.",
+    "You're doing great — never stop exploring and asking questions!",
+    "You make every conversation more interesting. Keep that energy!"
+];
+
+function getJoke()       { return JOKES[Math.floor(Math.random() * JOKES.length)]; }
+function getRoast()      { return ROASTS[Math.floor(Math.random() * ROASTS.length)]; }
+function getCompliment() { return COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)]; }
+
+// ══════════════════════════════════════════════════════
+//  GENERAL KNOWLEDGE
+// ══════════════════════════════════════════════════════
+function getGeneralAnswer(question) {
+    const q = question.toLowerCase().trim();
+
+    // Time & Date
+    if (q.match(/what.*(time|clock)|current time|time is it/))         return getCurrentTime();
+    if (q.match(/what.*date|today.*date|date.*today/))                 return getCurrentDate();
+    if (q.match(/what.*day\b|today.*day|which day/)) {
+        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        return `Today is ${days[new Date().getDay()]}.`;
+    }
+    if (q.match(/what.*year/))   return `The current year is ${new Date().getFullYear()}.`;
+    if (q.match(/what.*month/))  return `The current month is ${new Date().toLocaleDateString('en-US',{month:'long'})}.`;
+
+    // Identity
+    if (q.match(/who (created|made|built|developed) you|who is your (creator|developer|maker)/))
+        return "I was created by the brilliant Martin Lutherking Owino — CEO and lead developer of Protogen AI under HECO AFRICA. He is a visionary technologist building Africa's AI future!";
+
+    if (q.match(/who is martin (lutherking|owino)|martin owino/))
+        return "Martin Lutherking Owino is the CEO and lead developer of Protogen AI under HECO AFRICA — a pioneering AI company in Africa. He built me, Bingo, to be the smartest voice assistant around!";
+
+    if (q.match(/who are you|what are you|your name/))
+        return "I'm Bingo — your intelligent AI voice assistant created by Protogen AI under HECO AFRICA. I can answer football questions, solve maths and physics, tell jokes, play music, convert units, and much more!";
+
+    if (q.match(/what can you do|your (features|abilities|capabilities)|help me/))
+        return "Here's what I can do: Football stats and live scores, Bundesliga and Premier League tables, Champions League updates, Messi and Ronaldo stats, Maths from basic arithmetic to calculus, Physics calculations, Unit conversions, History and geography, Jokes roasts and compliments, Music playback, Timers, and general knowledge. Just ask me anything!";
+
+    if (q.match(/what is (protogen|heco africa)/))
+        return "Protogen AI is a cutting-edge artificial intelligence company founded under HECO AFRICA by CEO Martin Lutherking Owino. Our mission is to build world-class AI solutions for Africa and beyond.";
+
+    // Greetings
+    if (q.match(/^(hi|hello|hey|howdy|what'?s? up|sup)\b/)) {
+        const h = new Date().getHours();
+        return `${h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening"}! I'm Bingo. What would you like to know?`;
+    }
+    if (q.match(/good morning/))              return "Good morning! Hope your day is off to a great start. Ask me anything!";
+    if (q.match(/good afternoon/))            return "Good afternoon! How can I help you?";
+    if (q.match(/good evening|good night/))   return "Good evening! How can I assist you tonight?";
+    if (q.match(/how are you|how do you feel/))
+        return "I'm running perfectly and ready to help! Ask me about football, maths, history — anything!";
+    if (q.match(/thank(s| you)|cheers|awesome/))
+        return "You're very welcome! Always happy to help. Ask me anything else!";
+
+    // Science & Tech facts
+    if (q.match(/speed of light/))       return "The speed of light in a vacuum is approximately 299,792,458 metres per second, or about 300,000 km/s.";
+    if (q.match(/speed of sound/))       return "The speed of sound in air at sea level is approximately 343 metres per second (1,235 km/h) at 20 degrees Celsius.";
+    if (q.match(/what is dna/))          return "DNA (Deoxyribonucleic acid) is the molecule that carries the genetic instructions for the development, functioning, growth and reproduction of all known living organisms.";
+    if (q.match(/what is ai|artificial intelligence/))
+        return "Artificial Intelligence (AI) is the simulation of human intelligence processes by computer systems. It includes learning, reasoning, problem-solving, perception, and language understanding.";
+    if (q.match(/what is the internet/)) return "The internet is a global network of interconnected computers and servers that communicate using standardised protocols. It was developed in the 1960s-70s and became publicly accessible in the 1990s.";
+    if (q.match(/what is gravity/))      return "Gravity is a fundamental force of nature that attracts objects with mass toward one another. On Earth, gravity accelerates objects at 9.81 metres per second squared toward the centre of the planet.";
+    if (q.match(/distance.*earth.*moon|moon.*distance/)) return "The average distance from Earth to the Moon is approximately 384,400 km.";
+    if (q.match(/distance.*earth.*sun|sun.*distance/))   return "The average distance from Earth to the Sun is approximately 149.6 million km, also called 1 Astronomical Unit (1 AU).";
+    if (q.match(/how old is (the )?earth/))              return "Earth is approximately 4.54 billion years old.";
+    if (q.match(/how old is the universe/))              return "The universe is estimated to be approximately 13.8 billion years old, based on observations of the cosmic microwave background.";
+    if (q.match(/pi\b|value of pi/))                     return "Pi (π) is approximately 3.14159265358979. It is the ratio of a circle's circumference to its diameter.";
+
+    // History
+    if (q.match(/world war (1|one|i)\b/) && !q.match(/world war (2|two|ii)/)) return HISTORY.ww1;
+    if (q.match(/world war (2|two|ii)/))      return HISTORY.ww2;
+    if (q.match(/cold war/))                  return HISTORY.coldWar;
+    if (q.match(/ancient egypt/))             return HISTORY.ancientEgypt;
+    if (q.match(/roman empire/))              return HISTORY.romanEmpire;
+    if (q.match(/renaissance/))               return HISTORY.renaissance;
+    if (q.match(/french revolution/))         return HISTORY.frenchRevolution;
+    if (q.match(/industrial revolution/))     return HISTORY.industrialRevolution;
+    if (q.match(/martin luther king|mlk/))    return HISTORY.martinLutherKing;
+    if (q.match(/nelson mandela/))            return HISTORY.nelsonMandela;
+    if (q.match(/mahatma gandhi|gandhi/))     return HISTORY.gandhiMahatma;
+    if (q.match(/kenya.*independen|independen.*kenya/)) return HISTORY.kenyaIndependence;
+    if (q.match(/christopher columbus|columbus/))       return HISTORY.columbusAmerica;
+    if (q.match(/moon landing|neil armstrong|apollo 11/)) return HISTORY.moonLanding;
+
+    // Geography — capitals
+    const capMatch = q.match(/capital\s+(?:of|city\s+of)\s+(.+?)(?:\?|$)/);
+    if (capMatch) {
+        const country = capMatch[1].trim().replace(/\?/g,'').toLowerCase();
+        const capital = GEOGRAPHY.capitals[country] || GEOGRAPHY.capitals[country.replace(/^the\s+/,'')];
+        if (capital) return `The capital of ${country.charAt(0).toUpperCase() + country.slice(1)} is ${capital}.`;
+        return `I don't have the capital of ${country} in my database. Try searching online for the latest information.`;
+    }
+
+    // Geography — facts
+    if (q.match(/largest country/))                                return `The largest country in the world is ${GEOGRAPHY.facts.largestCountry}.`;
+    if (q.match(/smallest country/))                               return `The smallest country in the world is ${GEOGRAPHY.facts.smallestCountry}.`;
+    if (q.match(/longest river/))                                  return `The longest river in the world is the ${GEOGRAPHY.facts.longestRiver}.`;
+    if (q.match(/largest ocean/))                                  return `The largest ocean in the world is the ${GEOGRAPHY.facts.largestOcean}.`;
+    if (q.match(/highest mountain|tallest mountain|mount everest/)) return `The highest mountain is ${GEOGRAPHY.facts.highestMountain}.`;
+    if (q.match(/largest desert/))                                 return GEOGRAPHY.facts.largestDesert;
+    if (q.match(/amazon rainforest/))                              return GEOGRAPHY.facts.largestRainforest;
+    if (q.match(/great wall of china/))                            return GEOGRAPHY.facts.greatWall;
+    if (q.match(/deepest ocean|mariana trench/))                   return `The deepest point in the ocean is the ${GEOGRAPHY.facts.deepestOcean}.`;
+
+    return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  FOOTBALL ANSWER (local fallback)
+// ══════════════════════════════════════════════════════
+function getFootballAnswer(question) {
+    const q   = question.toLowerCase();
+    const bm  = FOOTBALL.teams.bayernMunich;
+    const liv = FOOTBALL.teams.liverpool;
+    const mes = FOOTBALL.players.messi;
+    const ron = FOOTBALL.players.ronaldo;
+
+    // Live scores
+    if (q.match(/live (score|match|game)|score.*now|currently playing/)) {
+        const list = FOOTBALL.championsLeague.secondLeg.map(f =>
+            `${f.date}: ${f.home} vs ${f.away} (${f.comp} at ${f.time})`
+        ).join("; ");
+        return `No live scores available right now. Today's scheduled fixtures: ${list}.`;
+    }
+
+    // Upcoming fixtures
+    if (q.match(/upcoming|next.*fixtures?|fixture.*list|schedule/)) {
+        const list = FOOTBALL.upcomingFixtures.map(f =>
+            `${f.date}: ${f.home} vs ${f.away} — ${f.comp} at ${f.time}`
+        ).join(". ");
+        return `Upcoming Fixtures: ${list}`;
+    }
+
+    // Recent results
+    if (q.match(/recent results?|latest results?|last.*results?/)) {
+        const list = FOOTBALL.recentResults.map(r =>
+            `${r.date}: ${r.home} ${r.hScore}-${r.aScore} ${r.away} (${r.comp})`
+        ).join(". ");
+        return `Recent Results: ${list}`;
+    }
+
+    // News
+    if (q.match(/football news|latest news|latest football/))
+        return `Football Headlines: ${FOOTBALL.news.join(". ")}`;
+
+    // ── MESSI ──
+    if (q.includes('messi')) {
+        if (q.match(/messi.*ronaldo|ronaldo.*messi|vs|compare|better|goat.*debate/))
+            return `Messi vs Ronaldo — the eternal debate! Messi: ${mes.goals} goals, ${mes.matches} matches, ${mes.assists} assists, ${mes.ballonDor} Ballon d'Or awards, 1 World Cup, 4 Champions League titles. Ronaldo: ${ron.goals} goals (all-time record), ${ron.matches} matches, ${ron.assists} assists, ${ron.ballonDor} Ballon d'Or awards, 5 Champions League titles, no World Cup. Messi won the 2022 World Cup to complete his legacy as the undisputed Greatest Of All Time!`;
+        if (q.match(/goals?/))
+            return `Lionel Messi has scored an extraordinary ${mes.goals} career goals in ${mes.matches} matches, with ${mes.assists} assists. He scored 672 goals for Barcelona alone — a record for any single club.`;
+        if (q.match(/trophies?|titles?|honors?/))
+            return `Lionel Messi's trophies: ${mes.trophies.join(", ")}.`;
+        if (q.match(/records?/))
+            return `Messi's records: ${mes.records.join(". ")}.`;
+        if (q.match(/age|born|birthday/))
+            return `Lionel Messi was born on ${mes.dob} and is ${mes.age} years old.`;
+        if (q.match(/club|team|play/))
+            return `Messi currently plays for ${mes.currentClub} in MLS.`;
+        return `The Greatest Of All Time — Lionel Messi. Born ${mes.dob} in Rosario, Argentina. Career: ${mes.goals} goals, ${mes.assists} assists in ${mes.matches} matches. Awards: ${mes.ballonDor} Ballon d'Or awards — the most ever by any player — plus 1 World Cup, 4 Champions League titles, and 10 La Liga titles. His vision, dribbling, and genius remain unmatched in football history. Currently playing for ${mes.currentClub} at age ${mes.age}.`;
+    }
+
+    // ── RONALDO ──
+    if (q.match(/\bronaldo\b|cristiano ronaldo/)) {
+        if (q.match(/goals?/))
+            return `Cristiano Ronaldo holds the all-time record with ${ron.goals} career goals in ${ron.matches} matches — more than any footballer in history!`;
+        if (q.match(/trophies?|titles?/))
+            return `Cristiano Ronaldo's trophies: ${ron.trophies.join(", ")}.`;
+        if (q.match(/records?/))
+            return `Ronaldo's records: ${ron.records.join(". ")}.`;
+        return `Cristiano Ronaldo — one of the greatest footballers ever. Born ${ron.dob}. Career: ${ron.goals} goals (the all-time world record!), ${ron.assists} assists in ${ron.matches} matches. ${ron.ballonDor} Ballon d'Or awards, 5 Champions League titles, 1 Euro 2016. Currently plays for ${ron.currentClub}.`;
+    }
+
+    // ── HARRY KANE ──
+    if (q.match(/harry kane|\bkane\b/))
+        return `Harry Kane is Bayern Munich's star striker and the Bundesliga's top scorer with ${bm.topScorerGoals} goals this season. He joined Bayern Munich from Tottenham Hotspur and has been truly outstanding at the Allianz Arena.`;
+
+    // ── MUSIALA ──
+    if (q.match(/musiala/))
+        return `Jamal Musiala is Bayern Munich's creative genius in midfield. He has ${bm.topAssistCount} assists this season, making him the top creator at Bayern. Born in Stuttgart in 2003, he is one of the brightest young talents in world football.`;
+
+    // ── OLISE ──
+    if (q.match(/\bolise\b/))
+        return `Michael Olise joined Bayern Munich from Crystal Palace in 2024. The French winger has been electric at the Allianz Arena this season and is one of Bayern's key attackers.`;
+
+    // ── SALAH ──
+    if (q.match(/\bsalah\b|mo salah/))
+        return `Mohamed Salah is Liverpool's captain and talisman. This season he has ${liv.topScorerGoals} Premier League goals and ${liv.topAssistCount} assists — the most in both categories at Liverpool. He remains one of the best players in the world at 32.`;
+
+    // ── VAN DIJK ──
+    if (q.match(/van dijk|virgil/))
+        return `Virgil van Dijk is Liverpool's commanding centre-back and one of the best defenders in the world. He has been absolutely crucial to Liverpool's Premier League title challenge this season.`;
+
+    // ── KIMMICH ──
+    if (q.match(/kimmich/))
+        return `Joshua Kimmich is Bayern Munich's midfield engine — a tireless, intelligent player who can play as defensive midfielder or right-back. He is one of the best midfielders in the world.`;
+
+    // ── NEUER ──
+    if (q.match(/\bneuer\b/))
+        return `Manuel Neuer is Bayern Munich's legendary goalkeeper and one of the greatest in football history. He revolutionised the sweeper-keeper role and remains Bayern's first-choice keeper.`;
+
+    // ── DAVIES ──
+    if (q.match(/alphonso davies|davies/))
+        return `Alphonso Davies is Bayern Munich's Canadian left-back known for his explosive pace and attacking ability. He is one of the fastest players in world football.`;
+
+    // ── LIVERPOOL ──
+    if (q.match(/\bliverpool\b|lfc\b|the reds\b/)) {
+        if (q.match(/next match|next game|fixture/)) {
+            const nm = liv.nextMatch;
+            return `Liverpool's next match: vs ${nm.opponent}, ${nm.competition}, ${nm.date} at ${nm.venue}, kick-off ${nm.time}.`;
+        }
+        if (q.match(/last (match|result|game)|recent result/)) {
+            const lr = liv.lastResult;
+            return `Liverpool's last result: vs ${lr.opponent} — ${lr.score} (${lr.result}) on ${lr.date} in the ${lr.competition}.`;
+        }
+        if (q.match(/top scorer|goals/))
+            return `Liverpool's top scorer is Mohamed Salah with ${liv.topScorerGoals} goals and ${liv.topAssistCount} assists this season.`;
+        if (q.match(/squad|players|key players/))
+            return `Liverpool's key players: ${liv.keyPlayers.join(", ")}. Manager: ${liv.manager}.`;
+        if (q.match(/trophies?|titles?/))
+            return `Liverpool's major trophies: ${liv.trophies.leagueTitles} league titles, ${liv.trophies.faCup} FA Cups, ${liv.trophies.leagueCup} League Cups, ${liv.trophies.championsLeague} Champions League titles.`;
+        if (q.match(/manager|coach/))
+            return `Liverpool's manager is ${liv.manager}, who replaced Jurgen Klopp in 2024.`;
+        if (q.match(/stadium|anfield/))
+            return `Liverpool play at Anfield which has a capacity of ${liv.capacity.toLocaleString()} seats. Anfield's famous Kop end is one of the most iconic stands in world football.`;
+        if (q.match(/table|position|standing/))
+            return `Liverpool are ${liv.position}st in the Premier League with ${liv.points} points from ${liv.played} games (W${liv.won} D${liv.drawn} L${liv.lost}), scoring ${liv.goalsFor} goals.`;
+        return `Liverpool FC — Premier League leaders in ${new Date().getFullYear()} with ${liv.points} points from ${liv.played} games. Founded ${liv.founded}, Stadium: Anfield (${liv.capacity.toLocaleString()} capacity), Manager: ${liv.manager}, Top scorer: ${liv.topScorer} (${liv.topScorerGoals} goals, ${liv.topAssistCount} assists). Last result: ${liv.lastResult.score} vs ${liv.lastResult.opponent}.`;
+    }
+
+    // ── ARSENAL ──
+    if (q.match(/\barsenal\b/)) {
+        const ars = FOOTBALL.premierLeague.find(t => t.team === 'Arsenal');
+        if (!ars) return null;
+        return `Arsenal are ${ars.pos}nd in the Premier League with ${ars.pts} points from ${ars.p} games (W${ars.w} D${ars.d} L${ars.l}). They beat PSG 3-1 in the Champions League quarter-final first leg on April 9, 2026. Manager: Mikel Arteta. Stadium: Emirates Stadium (60,704 capacity).`;
+    }
+
+    // ── BAYERN MUNICH ──
+    if (q.match(/\bbayern\b|fc bayern/)) {
+        if (q.match(/next match|next game|fixture/)) {
+            const nm = bm.nextMatch;
+            return `Bayern Munich's next match: vs ${nm.opponent}, ${nm.competition}, ${nm.date} at ${nm.venue}, kick-off ${nm.time}.`;
+        }
+        if (q.match(/last (match|result|game)|recent result/)) {
+            const lr = bm.lastResult;
+            return `Bayern Munich's last result: ${lr.opponent} ${lr.score} (${lr.result}) on ${lr.date} in the ${lr.competition}.`;
+        }
+        if (q.match(/top scorer|goals?/))
+            return `Bayern Munich's top scorer is Harry Kane with ${bm.topScorerGoals} Bundesliga goals this season. Top assist provider is Jamal Musiala with ${bm.topAssistCount} assists.`;
+        if (q.match(/squad|players|key players/))
+            return `Bayern Munich's key players: ${bm.keyPlayers.join(", ")}. Manager: ${bm.manager}.`;
+        if (q.match(/trophies?|titles?/))
+            return `Bayern Munich's trophies: ${bm.trophies.bundesliga} Bundesliga titles, ${bm.trophies.dfbPokal} DFB-Pokal titles, ${bm.trophies.championsLeague} Champions League titles.`;
+        if (q.match(/manager|coach/))
+            return `Bayern Munich's manager is ${bm.manager}, who took charge in 2024 replacing Thomas Tuchel.`;
+        if (q.match(/stadium|allianz arena/))
+            return `Bayern Munich play at the ${bm.stadium} which has a capacity of ${bm.capacity.toLocaleString()} seats. It opened in 2005 and is one of the most modern stadiums in the world.`;
+        if (q.match(/table|position|standing/))
+            return `Bayern Munich are ${bm.position}st in the Bundesliga with ${bm.points} points from ${bm.played} games (W${bm.won} D${bm.drawn} L${bm.lost}), scoring a league-best ${bm.goalsFor} goals.`;
+        return `FC Bayern Munich — Germany's most successful club and Bundesliga leaders. ${bm.points} points from ${bm.played} games. Founded ${bm.founded}, Stadium: ${bm.stadium} (${bm.capacity.toLocaleString()} capacity), Manager: ${bm.manager}, Top scorer: ${bm.topScorer} (${bm.topScorerGoals} goals), Top assist: ${bm.topAssist} (${bm.topAssistCount} assists). Trophies: ${bm.trophies.bundesliga} Bundesliga, ${bm.trophies.dfbPokal} DFB-Pokal, ${bm.trophies.championsLeague} Champions League.`;
+    }
+
+    // ── BUNDESLIGA TABLE ──
+    if (q.match(/bundesliga (table|standings?|top|leaders?)|top.*bundesliga/)) {
+        const rows = FOOTBALL.bundesliga.map(t =>
+            `${t.pos}. ${t.team} — ${t.pts} pts (${t.p} played, W${t.w} D${t.d} L${t.l}, GF ${t.gf} GA ${t.ga})`
+        ).join(". ");
+        return `Bundesliga 2025-26 Top 5: ${rows}`;
+    }
+
+    // ── PREMIER LEAGUE TABLE ──
+    if (q.match(/premier league (table|standings?|top)|epl table|pl table/)) {
+        const rows = FOOTBALL.premierLeague.map(t =>
+            `${t.pos}. ${t.team} — ${t.pts} pts (${t.p} played, W${t.w} D${t.d} L${t.l})`
+        ).join(". ");
+        return `Premier League 2025-26 Top 5: ${rows}`;
+    }
+
+    // ── CHAMPIONS LEAGUE ──
+    if (q.match(/champions league|ucl\b/)) {
+        const cl = FOOTBALL.championsLeague;
+        if (q.match(/quarter.?final|qf\b/)) {
+            const list = cl.quarterFinals.map(m =>
+                `${m.home} ${m.hScore}-${m.aScore} ${m.away} (${m.leg}, ${m.date})`
+            ).join("; ");
+            return `Champions League Quarter-Finals 2025-26 first-leg results: ${list}`;
+        }
+        if (q.match(/semi.?final|sf\b/))
+            return `Champions League Semi-Final dates: ${cl.semiFinalDates}.`;
+        if (q.match(/\bfinal\b/))
+            return `The 2025-26 Champions League Final will be held on ${cl.final.date} at ${cl.final.venue}.`;
+        if (q.match(/eliminated|knocked out/))
+            return `Teams eliminated from the Champions League 2025-26: ${cl.eliminated.join(", ")}.`;
+        return `Champions League 2025-26 is at the ${cl.stage}. Bayern Munich lead Real Madrid 2-1 after the first leg. Arsenal beat PSG 3-1. The final is on ${cl.final.date} at ${cl.final.venue}.`;
+    }
+
+    // ── WORLD CUP ──
+    if (q.match(/world cup/)) {
+        const wc = FOOTBALL.worldCup2026;
+        return `FIFA World Cup 2026: Hosted by ${wc.hosts.join(", ")}. Dates: ${wc.startDate} to ${wc.finalDate}. ${wc.teams} teams in ${wc.groups} groups. Final venue: ${wc.finalVenue}. Defending champions: ${wc.defending}. ${wc.notable}.`;
+    }
+
+    // ── REAL MADRID ──
+    if (q.match(/real madrid/))
+        return `Real Madrid trail Bayern Munich 1-2 after the Champions League quarter-final first leg. Their second leg is on April 15, 2026 at the Bernabeu. Real Madrid have won the most Champions League titles — 15 in total.`;
+
+    // ── PSG ──
+    if (q.match(/\bpsg\b|paris saint.germain/))
+        return `Paris Saint-Germain trail Arsenal 1-3 after the Champions League quarter-final first leg. Their second leg is on April 16, 2026 at Parc des Princes.`;
+
+    // General football
+    if (q.match(/football|soccer|goal\b|match\b|pitch\b|penalty\b|offside|referee/))
+        return `Latest football news: ${FOOTBALL.news[0]}. ${FOOTBALL.news[1]}. Ask me about Bayern Munich, Liverpool, Messi, Ronaldo, the Champions League, Bundesliga, Premier League, or the 2026 World Cup for full stats!`;
+
+    return null;
+}
+
+// ══════════════════════════════════════════════════════
+//  LIVE API FOOTBALL ANSWER (tries API, falls back to local)
+// ══════════════════════════════════════════════════════
+async function getFootballAnswerLive(question) {
+    const q = question.toLowerCase();
+
+    // Live scores — try API first
+    if (q.match(/live (score|match|game)|score.*now|currently playing|today.*match/)) {
+        toast('Fetching live scores…');
+        const events = await getLiveScores();
+        if (events && events.length) {
+            const live = events.slice(0, 5).map(e =>
+                `${e.strHomeTeam} ${e.intHomeScore || 0}-${e.intAwayScore || 0} ${e.strAwayTeam} (${e.strLeague})`
+            ).join("; ");
+            return `Live matches today: ${live}`;
+        }
+        // fallback
+        return getFootballAnswer(question);
+    }
+
+    // Next fixtures for specific team — try API
+    const teamMatch = q.match(/(?:next|upcoming|fixtures?|schedule).*(?:for\s+)?(.+?)(?:\?|$)/);
+    if (teamMatch && q.match(/next|upcoming|fixture/)) {
+        const teamName = teamMatch[1].trim();
+        const id = TEAM_IDS[teamName];
+        if (id) {
+            toast(`Fetching ${teamName} fixtures…`);
+            const events = await getTeamFixtures(teamName);
+            if (events && events.length) {
+                const list = events.slice(0, 3).map(e =>
+                    `${e.dateEvent}: ${e.strHomeTeam} vs ${e.strAwayTeam} (${e.strLeague})`
+                ).join("; ");
+                return `Upcoming fixtures for ${teamName}: ${list}`;
+            }
+        }
+    }
+
+    // Last results for specific team — try API
+    if (q.match(/last result|recent result|last game|last match/)) {
+        const teamName = q.includes('bayern') ? 'Bayern Munich' :
+                         q.includes('liverpool') ? 'Liverpool' : null;
+        if (teamName) {
+            toast(`Fetching ${teamName} results…`);
+            const results = await getLastResults(teamName);
+            if (results && results.length) {
+                const r = results[0];
+                return `${teamName}'s last result: ${r.strHomeTeam} ${r.intHomeScore}-${r.intAwayScore} ${r.strAwayTeam} on ${r.dateEvent} (${r.strLeague})`;
+            }
+        }
+    }
+
+    return getFootballAnswer(question);
+}
+
+// ══════════════════════════════════════════════════════
+//  MUSIC PLAYER
+// ══════════════════════════════════════════════════════
 function unlockAudio() {
     if (audioUnlocked) return;
-    if (!audioCtx) {
+    try {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         gainNode = audioCtx.createGain();
         gainNode.gain.value = vol;
         gainNode.connect(audioCtx.destination);
-    }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    audioUnlocked = true;
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        audioUnlocked = true;
+    } catch (e) { /* not critical */ }
 }
 
-// ═══════════════════════════════════════════════════════════
-// SPEECH RECOGNITION
-// ═══════════════════════════════════════════════════════════
+function playSong(idx) {
+    if (idx < 0 || idx >= SONGS.length) return;
+    unlockAudio();
+    if (curSong >= 0) songHistory.push(curSong);
+    if (songHistory.length > 20) songHistory.shift();
+    curSong  = idx;
+    playing  = true;
+    songPos  = 0;
+    songDur  = SONGS[idx].duration || 180;
+    clearInterval(progTmr);
+    progTmr  = setInterval(tickSong, 1000);
+    const player  = document.getElementById('player');
+    const pTitle  = document.getElementById('pTitle');
+    const pArtist = document.getElementById('pArtist');
+    const playBtn = document.getElementById('playBtn');
+    const pTot    = document.getElementById('pTot');
+    if (player)  player.classList.add('on');
+    if (pTitle)  pTitle.textContent  = SONGS[idx].t;
+    if (pArtist) pArtist.textContent = SONGS[idx].a;
+    if (playBtn) playBtn.textContent = '⏸';
+    if (pTot)    pTot.textContent    = fmt(songDur);
+    speakText(`Now playing ${SONGS[idx].t} by ${SONGS[idx].a}`);
+}
+
+function tickSong() {
+    if (!playing) return;
+    songPos++;
+    const pfill = document.getElementById('pfill');
+    const pCur  = document.getElementById('pCur');
+    if (pfill) pfill.style.width = (songPos / songDur * 100) + '%';
+    if (pCur)  pCur.textContent  = fmt(songPos);
+    if (songPos >= songDur) {
+        if (repeatMode) { songPos = 0; return; }
+        nextSong();
+    }
+}
+
+function togglePlay() {
+    if (curSong < 0) { playSong(0); return; }
+    playing = !playing;
+    const playBtn = document.getElementById('playBtn');
+    if (playBtn) playBtn.textContent = playing ? '⏸' : '▶';
+    speakText(playing ? "Resuming music." : "Music paused.");
+}
+
+function nextSong() {
+    clearInterval(progTmr);
+    if (shuffleMode) {
+        let idx;
+        do { idx = Math.floor(Math.random() * SONGS.length); } while (idx === curSong && SONGS.length > 1);
+        playSong(idx);
+    } else {
+        playSong((curSong + 1) % SONGS.length);
+    }
+}
+
+function prevSong() {
+    clearInterval(progTmr);
+    if (songHistory.length > 0) {
+        playSong(songHistory.pop());
+    } else {
+        playSong((curSong - 1 + SONGS.length) % SONGS.length);
+    }
+}
+
+function stopMusic() {
+    clearInterval(progTmr);
+    playing = false;
+    curSong = -1;
+    songPos = 0;
+    const player = document.getElementById('player');
+    if (player) player.classList.remove('on');
+    speakText("Music stopped.");
+}
+
+function toggleShuffle() {
+    shuffleMode = !shuffleMode;
+    speakText(shuffleMode ? "Shuffle on." : "Shuffle off.");
+    toast(shuffleMode ? "Shuffle ON" : "Shuffle OFF");
+}
+
+function toggleRepeat() {
+    repeatMode = !repeatMode;
+    speakText(repeatMode ? "Repeat on." : "Repeat off.");
+    toast(repeatMode ? "Repeat ON" : "Repeat OFF");
+}
+
+function setVol(v) {
+    vol = Math.max(0, Math.min(1, parseFloat(v)));
+    if (gainNode) gainNode.gain.value = vol;
+    const slider = document.getElementById('volSlider');
+    if (slider) slider.value = vol;
+}
+
+function fmt(s) {
+    const sec = Math.floor(s) || 0;
+    return Math.floor(sec / 60) + ':' + (sec % 60 < 10 ? '0' : '') + (sec % 60);
+}
+
+// ══════════════════════════════════════════════════════
+//  TIMER
+// ══════════════════════════════════════════════════════
+function parseTimer(question) {
+    const q = question.toLowerCase();
+    const hr  = q.match(/(\d+)\s*hours?/);
+    const min = q.match(/(\d+)\s*minutes?/);
+    const sec = q.match(/(\d+)\s*seconds?/);
+    let totalMs = 0, parts = [];
+    if (hr)  { const h = parseInt(hr[1]);  totalMs += h * 3600000; parts.push(`${h} hour${h > 1 ? 's' : ''}`); }
+    if (min) { const m = parseInt(min[1]); totalMs += m * 60000;   parts.push(`${m} minute${m > 1 ? 's' : ''}`); }
+    if (sec) { const s = parseInt(sec[1]); totalMs += s * 1000;    parts.push(`${s} second${s > 1 ? 's' : ''}`); }
+    return totalMs > 0 ? { ms: totalMs, label: parts.join(' and ') } : null;
+}
+
+function setTimer(question) {
+    if (!question.match(/set.*timer|timer.*for|alarm/)) return null;
+    const parsed = parseTimer(question);
+    if (!parsed) return null;
+    setTimeout(() => {
+        speakText(`Timer done! ${parsed.label} have passed. Time is up!`);
+        toast(`Timer done — ${parsed.label}`);
+    }, parsed.ms);
+    return `Timer set for ${parsed.label}. I will let you know when it is done!`;
+}
+
+// ══════════════════════════════════════════════════════
+//  SPEECH SYNTHESIS
+// ══════════════════════════════════════════════════════
+let ttsQueue = [], ttsBusy = false;
+
+function speakText(text) {
+    if (!window.speechSynthesis) return;
+    const clean = String(text)
+        .replace(/<[^>]+>/g, '')
+        .replace(/[^\w\s.,!?'\-:;()\/]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (!clean) return;
+    window.speechSynthesis.cancel();
+    ttsQueue = [clean];
+    ttsBusy  = false;
+    drainTTS();
+}
+
+function drainTTS() {
+    if (!ttsQueue.length) { ttsBusy = false; return; }
+    ttsBusy = true;
+    const text = ttsQueue.shift();
+    const utt  = new SpeechSynthesisUtterance(text);
+    utt.rate   = 0.92;
+    utt.volume = 1;
+    utt.pitch  = 1.05;
+    utt.lang   = 'en-US';
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+        /Google US English|Microsoft Aria|Samantha|Karen|Moira|Daniel/i.test(v.name)
+    ) || voices.find(v => v.lang === 'en-US' && !v.localService)
+      || voices.find(v => /en/i.test(v.lang));
+    if (preferred) utt.voice = preferred;
+
+    setLogo('speaking');
+    waveOn(true);
+    utt.onstart = () => setStatus('Bingo is speaking…', '');
+    utt.onend   = () => {
+        ttsBusy = false;
+        if (!ttsQueue.length) {
+            setLogo('idle');
+            waveOn(false);
+            setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb or say "Bingo"');
+            setTimeout(() => VR.startWake(), 700);
+        }
+        drainTTS();
+    };
+    utt.onerror = () => { ttsBusy = false; drainTTS(); };
+    window.speechSynthesis.speak(utt);
+}
+
+function stopSpeak() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    ttsQueue = [];
+    ttsBusy  = false;
+    setLogo('idle');
+    waveOn(false);
+}
+
+if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+// ══════════════════════════════════════════════════════
+//  MAIN PROCESSOR
+// ══════════════════════════════════════════════════════
+async function processInput(text) {
+    const q = text.trim();
+    if (!q) { VR.startWake(); return; }
+
+    stopSpeak();
+    setLogo('thinking');
+    waveOn(false);
+    setStatus('Thinking…', '');
+    showTx(q, '');
+
+    let answer = null;
+
+    // 1. Football — try live API, fall back to local
+    answer = await getFootballAnswerLive(q);
+    if (answer) { finalize(q, answer); return; }
+
+    // 2. General knowledge
+    answer = getGeneralAnswer(q);
+    if (answer) { finalize(q, answer); return; }
+
+    // 3. Math
+    answer = solveMath(q);
+    if (answer) { finalize(q, answer); return; }
+
+    // 4. Physics
+    answer = solvePhysics(q);
+    if (answer) { finalize(q, answer); return; }
+
+    // 5. Unit conversion
+    answer = convertUnits(q);
+    if (answer) { finalize(q, answer); return; }
+
+    // 6. Jokes / Roasts / Compliments
+    if (q.match(/tell.*joke|joke\b|make me laugh/))         { finalize(q, getJoke());       return; }
+    if (q.match(/roast me|roast\b/))                        { finalize(q, getRoast());      return; }
+    if (q.match(/compliment me|compliment\b|say something nice/)) { finalize(q, getCompliment()); return; }
+
+    // 7. Timer
+    answer = setTimer(q);
+    if (answer) { finalize(q, answer); return; }
+
+    // 8. Music commands
+    if (q.match(/play (music|songs?|something|a song)\b/))      { playSong(0); finalize(q, `Playing ${SONGS[0].t} by ${SONGS[0].a}`); return; }
+    const playMatch = q.match(/^play (.+)/);
+    if (playMatch) {
+        const term = playMatch[1].toLowerCase();
+        const idx  = SONGS.findIndex(s =>
+            s.t.toLowerCase().includes(term) || s.a.toLowerCase().includes(term)
+        );
+        if (idx >= 0) { playSong(idx); finalize(q, `Playing ${SONGS[idx].t} by ${SONGS[idx].a}`); return; }
+    }
+    if (q.match(/next (song|track)/))                        { nextSong();    setLogo('idle'); return; }
+    if (q.match(/previous (song|track)|go back/))           { prevSong();    setLogo('idle'); return; }
+    if (q.match(/stop (music|playing)|stop music/))         { stopMusic();   setLogo('idle'); return; }
+    if (q.match(/pause (music|song)|pause\b/))              { togglePlay();  setLogo('idle'); return; }
+    if (q.match(/resume\b|unpause/))                        { if (!playing) togglePlay(); setLogo('idle'); return; }
+    if (q.match(/shuffle/))                                 { toggleShuffle(); setLogo('idle'); return; }
+    if (q.match(/repeat/))                                  { toggleRepeat();  setLogo('idle'); return; }
+    if (q.match(/volume up|louder|turn.*up/))               { setVol(vol + 0.15); finalize(q, "Volume increased!"); return; }
+    if (q.match(/volume down|quieter|turn.*down/))          { setVol(vol - 0.15); finalize(q, "Volume decreased."); return; }
+    if (q.match(/what.*playing|current.*song/)) {
+        if (curSong >= 0) { finalize(q, `Currently playing: ${SONGS[curSong].t} by ${SONGS[curSong].a}`); return; }
+        finalize(q, "No music is playing right now. Say play music to start!"); return;
+    }
+    if (q.match(/list.*songs?|song.*list|playlist/)) {
+        const list = SONGS.slice(0, 8).map((s, i) => `${i+1}. ${s.t} by ${s.a}`).join(", ");
+        finalize(q, `Here are some songs: ${list} and more!`); return;
+    }
+
+    // 9. Wikipedia fallback
+    setStatus('Searching…', '');
+    toast('Searching…');
+    try {
+        const term = encodeURIComponent(q.replace(/\s+/g,'_').substring(0, 60));
+        const resp = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${term}`);
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data.extract && data.type !== 'disambiguation' && !data.title?.includes('not found')) {
+                const summary = data.extract.substring(0, 450);
+                finalize(q, summary);
+                return;
+            }
+        }
+    } catch (e) { /* ignore */ }
+
+    finalize(q, `I'm not sure about that. Try asking me about football, maths, physics, history, geography, or say what can you do for a full list!`);
+}
+
+function finalize(question, answer) {
+    showTx(question, answer);
+    speakText(answer);
+    setLogo('idle');
+}
+
+// ══════════════════════════════════════════════════════
+//  SPEECH RECOGNITION
+// ══════════════════════════════════════════════════════
 const VR = {
-    wake: null, chat: null, chatActive: false, wakeActive: false, finalText: '',
+    wake: null, chat: null,
+    chatActive: false, wakeActive: false,
+    finalText: '',
 
     stopAll() {
-        try { if (this.wake) { this.wake.abort(); this.wake = null; } } catch (e) { }
-        try { if (this.chat) { this.chat.abort(); this.chat = null; } } catch (e) { }
+        try { if (this.wake) this.wake.abort(); } catch (e) {}
+        try { if (this.chat) this.chat.abort(); } catch (e) {}
+        this.wake = null; this.chat = null;
         this.chatActive = false; this.wakeActive = false;
     },
 
     startWake() {
         if (this.chatActive || this.wakeActive) return;
-        if (!window.SpeechRecognition && !window.webkitSpeechRecognition) return;
-        this.stopAll();
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        this.wake = new SR();
-        this.wake.continuous = true;
-        this.wake.interimResults = true;
-        this.wake.lang = 'en-US';
-        this.wakeActive = true;
+        if (!SR) return;
+        this.stopAll();
+        this.wake                   = new SR();
+        this.wake.continuous        = true;
+        this.wake.interimResults    = true;
+        this.wake.lang              = 'en-US';
+        this.wake.maxAlternatives   = 3;
+        this.wakeActive             = true;
+
         this.wake.onresult = (e) => {
             let txt = '';
-            for (let i = e.resultIndex; i < e.results.length; i++)
-                txt += e.results[i][0].transcript.toLowerCase();
-            if (/\b(bingo)\b/.test(txt)) {
-                this.stopAll(); flashWake(); setLogo('listening');
-                setStatus('Hey! Listening...', ''); waveOn(true);
-                if (isMobile) navigator.vibrate?.(100);
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                for (let a = 0; a < e.results[i].length; a++) {
+                    txt += e.results[i][a].transcript.toLowerCase() + ' ';
+                }
+            }
+            if (/\bbingo\b/.test(txt)) {
+                this.stopAll();
+                flashWake();
+                setLogo('listening');
+                setStatus('Hey! Listening…', '');
+                waveOn(true);
+                if (isMobile && navigator.vibrate) navigator.vibrate(100);
                 setTimeout(() => this.startChat(), 350);
             }
         };
-        this.wake.onerror = () => { this.wakeActive = false; setTimeout(() => this.startWake(), 1500); };
-        this.wake.onend = () => { this.wakeActive = false; if (!this.chatActive) setTimeout(() => this.startWake(), 1200); };
-        try { this.wake.start(); } catch (e) { this.wakeActive = false; setTimeout(() => this.startWake(), 2000); }
+
+        this.wake.onerror = (e) => {
+            this.wakeActive = false;
+            if (e.error !== 'aborted') setTimeout(() => this.startWake(), 2000);
+        };
+
+        this.wake.onend = () => {
+            this.wakeActive = false;
+            if (!this.chatActive) setTimeout(() => this.startWake(), 1200);
+        };
+
+        try {
+            this.wake.start();
+        } catch (e) {
+            this.wakeActive = false;
+            setTimeout(() => this.startWake(), 2500);
+        }
     },
 
     startChat() {
         if (this.chatActive) return;
         this.stopAll();
         unlockAudio();
-        if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-            speakText("Sorry, voice input needs Chrome or Edge."); return;
-        }
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        this.chat = new SR();
-        this.chat.continuous = false;
-        this.chat.interimResults = true;
-        this.chat.lang = activeLang === 'fr-FR' ? 'fr-FR'
-            : activeLang === 'es-ES' ? 'es-ES'
-                : activeLang === 'zh-CN' ? 'zh-CN' : 'en-US';
-        this.chatActive = true;
-        this.finalText = '';
-        setLogo('listening'); waveOn(true); setStatus('Listening...', 'Speak now');
+        if (!SR) {
+            speakText("Sorry, voice input requires Chrome or Edge. Please type your question.");
+            return;
+        }
+        this.chat                   = new SR();
+        this.chat.continuous        = false;
+        this.chat.interimResults    = true;
+        this.chat.lang              = activeLang;
+        this.chat.maxAlternatives   = 3;
+        this.chatActive             = true;
+        this.finalText              = '';
+        setLogo('listening');
+        waveOn(true);
+        setStatus('Listening…', 'Speak your question');
+
         this.chat.onresult = (e) => {
-            let fin = '';
-            for (let i = e.resultIndex; i < e.results.length; i++)
-                if (e.results[i].isFinal) fin += e.results[i][0].transcript;
-            if (fin) this.finalText = fin.trim();
+            let finalPart = '', interimPart = '';
+            for (let i = e.resultIndex; i < e.results.length; i++) {
+                if (e.results[i].isFinal) finalPart   += e.results[i][0].transcript;
+                else                      interimPart += e.results[i][0].transcript;
+            }
+            if (finalPart)   this.finalText = finalPart.trim();
+            if (interimPart) setStatus('Listening…', interimPart);
         };
-        this.chat.onerror = (e) => { if (e.error !== 'no-speech' && e.error !== 'aborted') toast('Mic error'); this.chatActive = false; };
+
+        this.chat.onerror = (e) => {
+            if (e.error !== 'no-speech' && e.error !== 'aborted') toast('Mic error: ' + e.error);
+            this.chatActive = false;
+        };
+
         this.chat.onend = () => {
-            this.chatActive = false; this.chat = null;
-            if (this.finalText) { processInput(this.finalText); this.finalText = ''; }
-            else {
-                setLogo('idle'); waveOn(false);
-                setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb · Say "Bingo"');
+            this.chatActive = false;
+            this.chat       = null;
+            if (this.finalText) {
+                processInput(this.finalText);
+                this.finalText = '';
+            } else {
+                setLogo('idle');
+                waveOn(false);
+                setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb or say "Bingo"');
                 setTimeout(() => this.startWake(), 600);
             }
         };
-        try { this.chat.start(); } catch (e) { this.chatActive = false; toast('Tap to try again'); setTimeout(() => this.startWake(), 1000); }
+
+        try {
+            this.chat.start();
+        } catch (e) {
+            this.chatActive = false;
+            toast('Tap to try again');
+            setTimeout(() => this.startWake(), 1000);
+        }
     }
 };
 
-// ═══════════════════════════════════════════════════════════
-// UI HELPERS
-// ═══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════════════
 function setStatus(main, sub) {
     const mainEl = document.getElementById('statusMain');
-    const subEl = document.getElementById('statusSub');
+    const subEl  = document.getElementById('statusSub');
     if (mainEl) mainEl.textContent = main;
     if (subEl && sub !== undefined) subEl.textContent = sub;
 }
-function waveOn(on) { const el = document.getElementById('waveWrap'); if (el) el.classList.toggle('on', on); }
-function setLogo(state) { const el = document.getElementById('logoOuter'); if (el) el.className = 'logo-outer ' + (state || 'idle'); }
-function flashWake() { const el = document.getElementById('wakeFlash'); if (el) { el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 900); } }
-function toast(msg, dur = 2800) {
+
+function waveOn(on) {
+    const el = document.getElementById('waveWrap');
+    if (el) el.classList.toggle('on', on);
+}
+
+function setLogo(state) {
+    const el = document.getElementById('logoOuter');
+    if (el) el.className = 'logo-outer ' + (state || 'idle');
+}
+
+function flashWake() {
+    const el = document.getElementById('wakeFlash');
+    if (el) {
+        el.classList.add('on');
+        setTimeout(() => el.classList.remove('on'), 900);
+    }
+}
+
+function toast(msg, dur) {
     const el = document.getElementById('toast');
     if (!el) return;
-    el.textContent = msg; el.classList.add('on');
-    clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), dur);
+    if (dur === undefined) dur = 2800;
+    el.textContent = msg;
+    el.classList.add('on');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('on'), dur);
 }
+
 function showTx(you, reply) {
     const box = document.getElementById('txBox');
     if (!box) return;
@@ -293,951 +1495,104 @@ function showTx(you, reply) {
         const replyEl = document.getElementById('txReply');
         if (replyEl) replyEl.innerHTML = reply;
         if (rw) rw.style.display = '';
-    } else { if (rw) rw.style.display = 'none'; }
-    box.classList.add('on'); clearTimeout(box._t);
-    box._t = setTimeout(() => box.classList.remove('on'), 9000);
-}
-
-// ═══════════════════════════════════════════════════════════
-// SPEECH SYNTHESIS
-// ═══════════════════════════════════════════════════════════
-let ttsQueue = [], ttsBusy = false;
-
-function speakText(text, opts = {}) {
-    if (!window.speechSynthesis) return;
-    const clean = text.replace(/<[^>]+>/g, '').replace(/[^\w\s.,!?\-']/g, '').trim();
-    if (!clean) return;
-    window.speechSynthesis.cancel();
-    ttsQueue.push({ text: clean, ...opts });
-    if (!ttsBusy) drainTTS();
-}
-
-function drainTTS() {
-    if (!ttsQueue.length) { ttsBusy = false; return; }
-    ttsBusy = true;
-    const item = ttsQueue.shift();
-    const utt = new SpeechSynthesisUtterance(item.text);
-    const voices = window.speechSynthesis.getVoices();
-    const g = item.forceGender || voiceGender;
-    const lang = item.lang || activeLang;
-
-    utt.rate = 0.92; utt.volume = 1; utt.pitch = 1.0;
-
-    if (lang === 'fr-FR') { const v = voices.find(v => /fr[-_]|french/i.test(v.lang)); if (v) utt.voice = v; }
-    else if (lang === 'es-ES') { const v = voices.find(v => /es[-_]|spanish/i.test(v.lang)); if (v) utt.voice = v; }
-    else if (lang === 'zh-CN') { const v = voices.find(v => /zh[-_]|chinese|mandarin/i.test(v.lang)); if (v) utt.voice = v; }
-    else if (g === 'female') { const v = voices.find(v => /samantha|google uk english female/i.test(v.name)); if (v) utt.voice = v; }
-    else if (g === 'male') { const v = voices.find(v => /google uk english male|daniel/i.test(v.name)); if (v) utt.voice = v; }
-
-    setLogo('speaking'); waveOn(true);
-    utt.onstart = () => setStatus('Bingo is speaking', '');
-    utt.onend = () => {
-        ttsBusy = false;
-        if (!ttsQueue.length) {
-            setLogo('idle'); waveOn(false);
-            setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb · Say "Bingo"');
-            setTimeout(() => VR.startWake(), 700);
-        }
-        drainTTS();
-    };
-    utt.onerror = () => { ttsBusy = false; drainTTS(); };
-    window.speechSynthesis.speak(utt);
-}
-
-function stopSpeak() {
-    window.speechSynthesis.cancel();
-    ttsQueue = []; ttsBusy = false;
-    setLogo('idle'); waveOn(false);
-    setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb · Say "Bingo"');
-}
-
-if (window.speechSynthesis) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-}
-
-// ═══════════════════════════════════════════════════════════
-// MUSIC PLAYER — ENHANCED
-// ═══════════════════════════════════════════════════════════
-function playSong(idx) {
-    if (idx < 0 || idx >= SONGS.length) return;
-    unlockAudio();
-    if (curSong >= 0) lastSong = curSong;
-    songHistory.push(idx);
-    if (songHistory.length > 20) songHistory.shift();
-    curSong = idx;
-    const s = SONGS[idx];
-    playing = true; songPos = 0; songDur = 180 + Math.floor(Math.random() * 60);
-    clearInterval(progTmr);
-    progTmr = setInterval(tickSong, 1000);
-    const player = document.getElementById('player');
-    if (player) player.classList.add('on');
-    const pTitle = document.getElementById('pTitle');
-    const pArtist = document.getElementById('pArtist');
-    const playBtn = document.getElementById('playBtn');
-    const pTot = document.getElementById('pTot');
-    if (pTitle) pTitle.textContent = s.t;
-    if (pArtist) pArtist.textContent = s.a + ' · ' + s.g;
-    if (playBtn) playBtn.textContent = '⏸';
-    if (pTot) pTot.textContent = fmt(songDur);
-    updateShuffleRepeatUI();
-    speakText(`Now playing ${s.t} by ${s.a}`);
-}
-
-function tickSong() {
-    if (!playing) return;
-    songPos = Math.min(songPos + 1, songDur);
-    const pfill = document.getElementById('pfill');
-    const pCur = document.getElementById('pCur');
-    if (pfill) pfill.style.width = (songPos / songDur * 100) + '%';
-    if (pCur) pCur.textContent = fmt(songPos);
-    if (songPos >= songDur) {
-        if (repeatMode) { songPos = 0; } else { nextSong(); }
-    }
-}
-
-function togglePlay() {
-    if (curSong < 0) { playSong(0); return; }
-    playing = !playing;
-    const playBtn = document.getElementById('playBtn');
-    if (playBtn) playBtn.textContent = playing ? '⏸' : '▶';
-    if (!playing) { clearInterval(progTmr); }
-    else { progTmr = setInterval(tickSong, 1000); if (curSong >= 0) speakText(`Resumed ${SONGS[curSong].t}`); }
-}
-
-function nextSong() {
-    clearInterval(progTmr);
-    if (shuffleMode) {
-        let idx;
-        do { idx = Math.floor(Math.random() * SONGS.length); } while (idx === curSong);
-        playSong(idx);
     } else {
-        playSong((curSong + 1) % SONGS.length);
+        if (rw) rw.style.display = 'none';
     }
+    box.classList.add('on');
+    clearTimeout(box._t);
+    box._t = setTimeout(() => box.classList.remove('on'), 12000);
 }
 
-function prevSong() {
-    clearInterval(progTmr);
-    if (songHistory.length > 1) { songHistory.pop(); playSong(songHistory[songHistory.length - 1]); }
-    else { playSong((curSong - 1 + SONGS.length) % SONGS.length); }
-}
-
-function stopMusic() {
-    clearInterval(progTmr); playing = false; curSong = -1;
-    const player = document.getElementById('player');
-    if (player) player.classList.remove('on');
-    speakText("Music stopped.");
-}
-
-function toggleShuffle() {
-    shuffleMode = !shuffleMode;
-    updateShuffleRepeatUI();
-    speakText(shuffleMode ? "Shuffle on." : "Shuffle off.");
-}
-
-function toggleRepeat() {
-    repeatMode = !repeatMode;
-    updateShuffleRepeatUI();
-    speakText(repeatMode ? "Repeat on, this song will loop." : "Repeat off.");
-}
-
-function updateShuffleRepeatUI() {
-    const sb = document.getElementById('shuffleBtn');
-    const rb = document.getElementById('repeatBtn');
-    if (sb) sb.style.opacity = shuffleMode ? '1' : '0.4';
-    if (rb) rb.style.opacity = repeatMode ? '1' : '0.4';
-}
-
-function playByMood(mood) {
-    const matches = SONGS.map((s, i) => ({ ...s, i })).filter(s => s.mood === mood);
-    if (matches.length) {
-        const pick = matches[Math.floor(Math.random() * matches.length)];
-        playSong(pick.i);
-    } else {
-        playSong(Math.floor(Math.random() * SONGS.length));
-    }
-}
-
-function playByGenre(genre) {
-    const lg = genre.toLowerCase();
-    const matches = SONGS.map((s, i) => ({ ...s, i })).filter(s => s.g.toLowerCase().includes(lg));
-    if (matches.length) {
-        const pick = matches[Math.floor(Math.random() * matches.length)];
-        playSong(pick.i);
-    } else {
-        speakText(`I don't have any ${genre} tracks in my library right now.`);
-    }
-}
-
-function setVol(v) { vol = parseFloat(v); if (gainNode) gainNode.gain.value = vol; }
-function fmt(s) { return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
-
-function findSong(q) {
-    const lq = q.toLowerCase();
-    let i = SONGS.findIndex(s => s.t.toLowerCase().includes(lq) || s.a.toLowerCase().includes(lq));
-    return i >= 0 ? i : Math.floor(Math.random() * SONGS.length);
-}
-
-// ═══════════════════════════════════════════════════════════
-// MATH ENGINE
-// ═══════════════════════════════════════════════════════════
-function tryMath(q) {
-    const ql = q.toLowerCase().trim();
-
-    // Percentage calculations: "15% of 340" or "what is 20 percent of 500"
-    const pctOfMatch = ql.match(/(\d+\.?\d*)\s*(%|percent)\s*of\s*(\d+\.?\d*)/i);
-    if (pctOfMatch) {
-        const result = (parseFloat(pctOfMatch[1]) / 100) * parseFloat(pctOfMatch[3]);
-        return `${pctOfMatch[1]}% of ${pctOfMatch[3]} is ${parseFloat(result.toFixed(4))}.`;
-    }
-
-    // Percentage: "what percent is X of Y"
-    const pctIsMatch = ql.match(/what percent (?:is\s+)?(\d+\.?\d*)\s+of\s+(\d+\.?\d*)/i);
-    if (pctIsMatch) {
-        const result = (parseFloat(pctIsMatch[1]) / parseFloat(pctIsMatch[2])) * 100;
-        return `${pctIsMatch[1]} is ${parseFloat(result.toFixed(2))}% of ${pctIsMatch[2]}.`;
-    }
-
-    // Square root
-    const sqrtMatch = ql.match(/square root of (\d+\.?\d*)/i);
-    if (sqrtMatch) {
-        const result = Math.sqrt(parseFloat(sqrtMatch[1]));
-        return `The square root of ${sqrtMatch[1]} is ${parseFloat(result.toFixed(6))}.`;
-    }
-
-    // Power
-    const powMatch = ql.match(/(\d+\.?\d*)\s*(?:to the power of|raised to|squared|cubed|\^)\s*(\d+\.?\d*)?/i);
-    if (powMatch) {
-        if (/squared/.test(ql)) { const r = Math.pow(parseFloat(powMatch[1]), 2); return `${powMatch[1]} squared is ${r}.`; }
-        if (/cubed/.test(ql)) { const r = Math.pow(parseFloat(powMatch[1]), 3); return `${powMatch[1]} cubed is ${r}.`; }
-        if (powMatch[2]) { const r = Math.pow(parseFloat(powMatch[1]), parseFloat(powMatch[2])); return `${powMatch[1]} to the power of ${powMatch[2]} is ${r}.`; }
-    }
-
-    // Basic arithmetic from spoken words
-    const spokenMatch = ql.match(/(?:what is|calculate|compute|solve)?\s*(\d+\.?\d*)\s*(plus|minus|times|multiplied by|divided by|over|x)\s*(\d+\.?\d*)/i);
-    if (spokenMatch) {
-        const a = parseFloat(spokenMatch[1]), b = parseFloat(spokenMatch[3]), op = spokenMatch[2].toLowerCase();
-        let result, opWord;
-        if (/plus/.test(op)) { result = a + b; opWord = 'plus'; }
-        else if (/minus/.test(op)) { result = a - b; opWord = 'minus'; }
-        else if (/times|multiplied by|x/.test(op)) { result = a * b; opWord = 'times'; }
-        else if (/divided by|over/.test(op)) {
-            if (b === 0) return "You can't divide by zero. That's undefined in math.";
-            result = a / b; opWord = 'divided by';
-        }
-        if (result !== undefined) return `${a} ${opWord} ${b} equals ${parseFloat(result.toFixed(8))}.`;
-    }
-
-    // Safe eval for typed expressions like "what is 45 + 90 * 2"
-    const evalMatch = ql.match(/(?:what is|calculate|compute|=)?\s*([\d\s+\-*\/().%]+)$/i);
-    if (evalMatch) {
-        const expr = evalMatch[1].trim();
-        if (/^[\d\s+\-*\/().%]+$/.test(expr)) {
-            try {
-                const result = Function('"use strict"; return (' + expr + ')')();
-                if (typeof result === 'number' && isFinite(result)) return `${expr} = ${parseFloat(result.toFixed(8))}`;
-            } catch (e) { }
-        }
-    }
-
-    return null;
-}
-
-// ═══════════════════════════════════════════════════════════
-// UNIT CONVERTER
-// ═══════════════════════════════════════════════════════════
-function tryConvert(q) {
-    const ql = q.toLowerCase().trim();
-    const val = parseFloat(ql.match(/(\d+\.?\d*)/)?.[1]);
-    if (isNaN(val)) return null;
-
-    // Temperature
-    if (/celsius.*fahrenheit|c to f/i.test(ql)) return `${val}°C = ${parseFloat(((val * 9 / 5) + 32).toFixed(2))}°F.`;
-    if (/fahrenheit.*celsius|f to c/i.test(ql)) return `${val}°F = ${parseFloat(((val - 32) * 5 / 9).toFixed(2))}°C.`;
-    if (/celsius.*kelvin|c to k/i.test(ql)) return `${val}°C = ${parseFloat((val + 273.15).toFixed(2))} Kelvin.`;
-
-    // Distance
-    if (/km.*miles|kilometers.*miles/i.test(ql)) return `${val} km = ${parseFloat((val * 0.621371).toFixed(4))} miles.`;
-    if (/miles.*km|miles.*kilometers/i.test(ql)) return `${val} miles = ${parseFloat((val * 1.60934).toFixed(4))} km.`;
-    if (/meters.*feet|m to ft/i.test(ql)) return `${val} meters = ${parseFloat((val * 3.28084).toFixed(4))} feet.`;
-    if (/feet.*meters|ft to m/i.test(ql)) return `${val} feet = ${parseFloat((val * 0.3048).toFixed(4))} meters.`;
-    if (/cm.*inches|centimeters.*inches/i.test(ql)) return `${val} cm = ${parseFloat((val * 0.393701).toFixed(4))} inches.`;
-    if (/inches.*cm|inches.*centimeters/i.test(ql)) return `${val} inches = ${parseFloat((val * 2.54).toFixed(4))} cm.`;
-
-    // Weight
-    if (/kg.*lbs|kilograms.*pounds/i.test(ql)) return `${val} kg = ${parseFloat((val * 2.20462).toFixed(4))} lbs.`;
-    if (/lbs.*kg|pounds.*kilograms/i.test(ql)) return `${val} lbs = ${parseFloat((val * 0.453592).toFixed(4))} kg.`;
-    if (/grams.*ounces|g to oz/i.test(ql)) return `${val} grams = ${parseFloat((val * 0.035274).toFixed(4))} ounces.`;
-
-    // Volume
-    if (/liters.*gallons|litres.*gallons/i.test(ql)) return `${val} liters = ${parseFloat((val * 0.264172).toFixed(4))} US gallons.`;
-    if (/gallons.*liters|gallons.*litres/i.test(ql)) return `${val} gallons = ${parseFloat((val * 3.78541).toFixed(4))} liters.`;
-    if (/ml.*cups|milliliters.*cups/i.test(ql)) return `${val} ml = ${parseFloat((val * 0.00422675).toFixed(4))} cups.`;
-
-    // Speed
-    if (/mph.*kmh|mph.*km\/h/i.test(ql)) return `${val} mph = ${parseFloat((val * 1.60934).toFixed(2))} km/h.`;
-    if (/kmh.*mph|km\/h.*mph/i.test(ql)) return `${val} km/h = ${parseFloat((val * 0.621371).toFixed(2))} mph.`;
-
-    // Data
-    if (/mb.*gb|megabytes.*gigabytes/i.test(ql)) return `${val} MB = ${parseFloat((val / 1024).toFixed(4))} GB.`;
-    if (/gb.*mb|gigabytes.*megabytes/i.test(ql)) return `${val} GB = ${parseFloat((val * 1024).toFixed(2))} MB.`;
-    if (/gb.*tb|gigabytes.*terabytes/i.test(ql)) return `${val} GB = ${parseFloat((val / 1024).toFixed(6))} TB.`;
-
-    return null;
-}
-
-// ═══════════════════════════════════════════════════════════
-// TIMER & REMINDER
-// ═══════════════════════════════════════════════════════════
-function tryTimer(q) {
-    const ql = q.toLowerCase();
-    const minMatch = ql.match(/set (?:a )?timer (?:for )?(\d+) minute/i);
-    const secMatch = ql.match(/set (?:a )?timer (?:for )?(\d+) second/i);
-    const hourMatch = ql.match(/set (?:a )?timer (?:for )?(\d+) hour/i);
-    const remindMatch = ql.match(/remind me (?:to (.+?) )?in (\d+) minute/i);
-
-    if (minMatch || secMatch || hourMatch) {
-        let secs = 0;
-        if (minMatch) secs = parseInt(minMatch[1]) * 60;
-        else if (secMatch) secs = parseInt(secMatch[1]);
-        else if (hourMatch) secs = parseInt(hourMatch[1]) * 3600;
-
-        const label = minMatch ? `${minMatch[1]} minute` : secMatch ? `${secMatch[1]} second` : `${hourMatch[1]} hour`;
-        const tid = setTimeout(() => { speakText(`Timer done! Your ${label} timer has finished.`); toast(`⏰ ${label} timer done!`); }, secs * 1000);
-        activeTimers.push({ tid, label, endsAt: Date.now() + secs * 1000 });
-        return `Timer set for ${label}${secs >= 3600 ? 's' : ''}. I'll let you know when it's done.`;
-    }
-
-    if (remindMatch) {
-        const task = remindMatch[1] || 'something';
-        const mins = parseInt(remindMatch[2]);
-        const tid = setTimeout(() => { speakText(`Reminder: ${task}`); toast(`🔔 Reminder: ${task}`); }, mins * 60 * 1000);
-        activeTimers.push({ tid, label: `Remind: ${task}`, endsAt: Date.now() + mins * 60 * 1000 });
-        return `Got it. I'll remind you to ${task} in ${mins} minute${mins > 1 ? 's' : ''}.`;
-    }
-
-    if (/cancel timer|stop timer/i.test(ql)) {
-        activeTimers.forEach(t => clearTimeout(t.tid));
-        activeTimers = [];
-        return "All timers cancelled.";
-    }
-
-    if (/how many timers|active timers/i.test(ql)) {
-        if (!activeTimers.length) return "No active timers right now.";
-        return `You have ${activeTimers.length} active timer${activeTimers.length > 1 ? 's' : ''}.`;
-    }
-
-    return null;
-}
-
-// ═══════════════════════════════════════════════════════════
-// TRIVIA ENGINE
-// ═══════════════════════════════════════════════════════════
-function tryTrivia(q) {
-    const ql = q.toLowerCase();
-
-    if (/start trivia|play trivia|quiz me|ask me a question/i.test(ql)) {
-        triviaActive = true; triviaScore = 0; triviaTotal = 0;
-        triviaIdx = Math.floor(Math.random() * triviaQuestions.length);
-        const tq = triviaQuestions[triviaIdx];
-        return `Trivia time! ${tq.q}`;
-    }
-
-    if (triviaActive) {
-        const tq = triviaQuestions[triviaIdx];
-        const correct = ql.includes(tq.a.toLowerCase());
-        triviaTotal++;
-        if (correct) {
-            triviaScore++;
-            triviaIdx = Math.floor(Math.random() * triviaQuestions.length);
-            const next = triviaQuestions[triviaIdx];
-            return `Correct! Nice one. Score: ${triviaScore} out of ${triviaTotal}. Next: ${next.q}`;
-        } else {
-            triviaIdx = Math.floor(Math.random() * triviaQuestions.length);
-            const next = triviaQuestions[triviaIdx];
-            return `Not quite. The answer was ${tq.a}. Score: ${triviaScore} out of ${triviaTotal}. Next: ${next.q}`;
-        }
-    }
-
-    if (/stop trivia|end trivia|quit trivia/i.test(ql)) {
-        triviaActive = false;
-        return `Trivia ended. Final score: ${triviaScore} out of ${triviaTotal}. Good game!`;
-    }
-
-    return null;
-}
-
-// ═══════════════════════════════════════════════════════════
-// WEB SEARCH - DIRECT ANSWER
-// ═══════════════════════════════════════════════════════════
-async function webSearchDirect(question) {
-    setStatus('Searching web...', 'Looking up your question');
-    toast(`🔍 Searching: "${question.substring(0, 40)}${question.length > 40 ? '...' : ''}"`);
-
-    try {
-        const searchTerm = question.replace(/who is|what is|tell me about|define|explain|what's|who's/gi, '').trim();
-        const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(searchTerm.replace(/ /g, '_'))}`;
-        const response = await fetch(wikiUrl);
-        const data = await response.json();
-        if (data.extract && !data.title?.includes("Not found")) {
-            let summary = data.extract.substring(0, 450);
-            if (data.extract.length > 450) summary += "...";
-            return summary;
-        }
-    } catch (e) { }
-
-    try {
-        const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(question)}&format=json&no_html=1`;
-        const response = await fetch(ddgUrl);
-        const data = await response.json();
-        if (data.AbstractText && data.AbstractText.length > 0) return data.AbstractText.substring(0, 450);
-        if (data.RelatedTopics?.[0]?.Text) {
-            let answer = data.RelatedTopics[0].Text;
-            return answer.length > 450 ? answer.substring(0, 450) + "..." : answer;
-        }
-    } catch (e) { }
-
-    try {
-        const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(question)}&format=json&origin=*`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-        if (data.query?.search?.[0]) {
-            const title = data.query.search[0].title;
-            const pageUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title.replace(/ /g, '_'))}`;
-            const pageResponse = await fetch(pageUrl);
-            const pageData = await pageResponse.json();
-            if (pageData.extract) {
-                let summary = pageData.extract.substring(0, 450);
-                if (pageData.extract.length > 450) summary += "...";
-                return summary;
-            }
-        }
-    } catch (e) { }
-
-    return `I searched for "${question}" but couldn't find a clear answer right now. Could you try rephrasing?`;
-}
-
-// ═══════════════════════════════════════════════════════════
-// EXPANDED KNOWLEDGE BASE (500+ entries)
-// ═══════════════════════════════════════════════════════════
-function getKnownAnswer(question) {
-    const q = question.toLowerCase().trim();
-
-    // ── MATH ──
-    const mathResult = tryMath(question);
-    if (mathResult) return mathResult;
-
-    // ── UNIT CONVERSION ──
-    const convertResult = tryConvert(question);
-    if (convertResult) return convertResult;
-
-    // ── CAPITAL CITIES ──
-    const capMatch = q.match(/capital of (.+)/i);
-    if (capMatch) {
-        const caps = {
-            kenya: 'Nairobi', uganda: 'Kampala', tanzania: 'Dodoma', ethiopia: 'Addis Ababa',
-            nigeria: 'Abuja', ghana: 'Accra', 'south africa': 'Pretoria', egypt: 'Cairo',
-            france: 'Paris', germany: 'Berlin', italy: 'Rome', spain: 'Madrid',
-            uk: 'London', 'united kingdom': 'London', usa: 'Washington D.C.',
-            'united states': 'Washington D.C.', china: 'Beijing', japan: 'Tokyo',
-            india: 'New Delhi', brazil: 'Brasília', canada: 'Ottawa', australia: 'Canberra',
-            russia: 'Moscow', mexico: 'Mexico City', argentina: 'Buenos Aires',
-            'south korea': 'Seoul', indonesia: 'Jakarta', turkey: 'Ankara',
-            'saudi arabia': 'Riyadh', iran: 'Tehran', thailand: 'Bangkok',
-            pakistan: 'Islamabad', bangladesh: 'Dhaka', vietnam: 'Hanoi',
-            philippines: 'Manila', malaysia: 'Kuala Lumpur', singapore: 'Singapore City',
-            'new zealand': 'Wellington', portugal: 'Lisbon', sweden: 'Stockholm',
-            norway: 'Oslo', denmark: 'Copenhagen', finland: 'Helsinki',
-            netherlands: 'Amsterdam', belgium: 'Brussels', switzerland: 'Bern',
-            austria: 'Vienna', poland: 'Warsaw', ukraine: 'Kyiv',
-            greece: 'Athens', romania: 'Bucharest', 'czech republic': 'Prague',
-            hungary: 'Budapest', colombia: 'Bogotá', peru: 'Lima',
-            chile: 'Santiago', venezuela: 'Caracas', ecuador: 'Quito',
-            senegal: 'Dakar', rwanda: 'Kigali', zimbabwe: 'Harare',
-            zambia: 'Lusaka', cameroon: 'Yaoundé', angola: 'Luanda',
-            mozambique: 'Maputo', somalia: 'Mogadishu', sudan: 'Khartoum',
-            morocco: 'Rabat', algeria: 'Algiers', tunisia: 'Tunis', libya: 'Tripoli',
-            'ivory coast': 'Yamoussoukro', mali: 'Bamako', niger: 'Niamey',
-            chad: 'N\'Djamena', namibia: 'Windhoek', botswana: 'Gaborone',
-            iraq: 'Baghdad', syria: 'Damascus', lebanon: 'Beirut', jordan: 'Amman',
-            israel: 'Jerusalem', 'united arab emirates': 'Abu Dhabi', qatar: 'Doha',
-            kuwait: 'Kuwait City', bahrain: 'Manama', oman: 'Muscat',
-            afghanistan: 'Kabul', nepal: 'Kathmandu', 'sri lanka': 'Sri Jayawardenepura Kotte',
-            myanmar: 'Naypyidaw', cambodia: 'Phnom Penh', laos: 'Vientiane'
-        };
-        const c = capMatch[1].trim().toLowerCase();
-        if (caps[c]) return `The capital of ${capMatch[1].trim()} is ${caps[c]}.`;
-    }
-
-    // ── TIME & DATE ──
-    if (q.includes('what time') || q.includes("time is it") || q.includes("current time")) {
-        const n = new Date();
-        return `It's ${n.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}.`;
-    }
-    if (q.includes('what date') || q.includes("today's date") || q.includes("what day")) {
-        const n = new Date();
-        return `Today is ${n.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}.`;
-    }
-    if (q.includes('what year') || q.includes('current year')) {
-        return `The current year is ${new Date().getFullYear()}.`;
-    }
-    if (q.includes('what month')) {
-        return `The current month is ${new Date().toLocaleString('en-US', { month: 'long' })}.`;
-    }
-
-    // ── SCIENCE & NATURE ──
-    const science = {
-        "what is ai": "Artificial Intelligence is when computers learn to think and make decisions. It powers voice assistants, self-driving cars, and medical diagnosis.",
-        "what is machine learning": "Machine learning lets computers learn from examples rather than being explicitly programmed — the more data they see, the smarter they get.",
-        "what is deep learning": "Deep learning is a type of machine learning using neural networks with many layers — like a brain. It's why image recognition and speech recognition work so well.",
-        "what is a neural network": "A neural network is a computer system loosely modeled after the human brain, with layers of connected nodes that process information together.",
-        "what is the speed of sound": "Sound travels at about 343 meters per second — or roughly 1,235 km/h — through air at room temperature.",
-        "what is gravity": "Gravity is the force of attraction between objects with mass. On Earth it pulls you down at 9.8 meters per second squared.",
-        "what is dna": "DNA is the molecule that carries the genetic instructions for all living organisms. It's shaped like a twisted ladder called a double helix.",
-        "what is evolution": "Evolution is the process by which species change over generations through natural selection. Organisms that adapt best to their environment survive and reproduce.",
-        "what is photosynthesis": "Photosynthesis is how plants convert sunlight, water, and carbon dioxide into glucose and oxygen. It's the foundation of most life on Earth.",
-        "what is osmosis": "Osmosis is the movement of water molecules through a semi-permeable membrane from an area of low solute concentration to high solute concentration.",
-        "how tall is mount everest": "Mount Everest is 8,848 meters (29,032 feet) tall — the highest point on Earth's surface.",
-        "how deep is the ocean": "The deepest point is the Mariana Trench at about 11,000 meters deep. The average ocean depth is about 3,688 meters.",
-        "how fast is light": "Light travels at 299,792 kilometers per second in a vacuum. Nothing goes faster.",
-        "how far is the sun": "The Sun is about 150 million kilometers from Earth on average. Light from the Sun takes about 8 minutes to reach us.",
-        "how far is the moon": "The Moon is about 384,400 kilometers from Earth on average.",
-        "how old is the earth": "Earth is approximately 4.54 billion years old.",
-        "how old is the universe": "The universe is approximately 13.8 billion years old, since the Big Bang.",
-        "what is the largest planet": "Jupiter is the largest planet in our solar system. You could fit over 1,300 Earths inside it.",
-        "what is the smallest planet": "Mercury is the smallest planet in our solar system.",
-        "what is the hottest planet": "Venus is the hottest planet at around 465°C, even hotter than Mercury, because of its thick atmosphere trapping heat.",
-        "how many planets": "There are 8 planets in our solar system: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.",
-        "what is a black hole": "A black hole is a region of space where gravity is so strong that nothing — not even light — can escape from it.",
-        "what is the big bang": "The Big Bang was the event approximately 13.8 billion years ago when the universe expanded rapidly from an extremely hot, dense state.",
-        "what is climate change": "Climate change refers to long-term shifts in global temperatures and weather patterns. Since the 1800s, human activity — mainly burning fossil fuels — has been the main driver.",
-        "what is global warming": "Global warming is the long-term rise in average temperatures on Earth, primarily caused by greenhouse gases like CO2 trapping heat in the atmosphere.",
-        "what is the periodic table": "The periodic table organizes all known chemical elements by their atomic number and properties. It has 118 confirmed elements.",
-        "what is an atom": "An atom is the smallest unit of a chemical element. It has a nucleus made of protons and neutrons, with electrons orbiting around it.",
-        "what is a molecule": "A molecule is two or more atoms bonded together. Water (H₂O) is two hydrogen atoms and one oxygen atom.",
-        "what is electricity": "Electricity is the flow of electric charge, usually electrons, through a conductor like wire. It powers most of our modern world.",
-        "what is the water cycle": "The water cycle describes how water evaporates from surfaces, rises into the atmosphere, forms clouds, falls as precipitation, and flows back to oceans and lakes.",
-        "why is the sky blue": "The sky looks blue because sunlight scatters off gas molecules in the atmosphere. Blue light scatters more than other colors, filling the sky.",
-        "why do leaves change color": "Leaves change color in autumn because chlorophyll breaks down as days get shorter, revealing yellow and orange pigments. Cool temperatures also trigger red pigment production.",
-        "how does the brain work": "The brain processes information through billions of neurons that send electrical and chemical signals to each other. Different regions handle different functions like vision, movement, and memory.",
-        "what is the immune system": "The immune system is your body's defense network — it identifies and destroys bacteria, viruses, and other threats using white blood cells and antibodies.",
-        "what is a virus": "A virus is a tiny infectious agent that replicates inside living cells. It's not technically 'alive' on its own — it hijacks your cells to reproduce.",
-        "what is a bacteria": "Bacteria are single-celled microorganisms. Some cause disease, but most are harmless or even helpful — like the bacteria in your gut that aid digestion.",
-        "what is mitosis": "Mitosis is how cells divide to create two identical daughter cells. It's how you grow and repair your body.",
-        "what is the speed of light": "The speed of light in a vacuum is exactly 299,792,458 meters per second, or about 300,000 km/s.",
-    };
-
-    // ── TECHNOLOGY ──
-    const tech = {
-        "what is javascript": "JavaScript is the programming language that makes websites interactive and dynamic. It runs in your browser and also on servers via Node.js.",
-        "what is python": "Python is a popular programming language known for being easy to read. It's great for data science, AI, automation, and web backends.",
-        "what is html": "HTML stands for HyperText Markup Language. It's the structure and content layer of every webpage — the skeleton of the web.",
-        "what is css": "CSS stands for Cascading Style Sheets. It controls the visual design of web pages — colors, fonts, layouts, and animations.",
-        "what is react": "React is a popular JavaScript library made by Meta for building interactive user interfaces. It's based on reusable components.",
-        "what is an api": "An API (Application Programming Interface) lets different software systems communicate. It's like a waiter in a restaurant — taking your request to the kitchen and returning what you asked for.",
-        "what is blockchain": "Blockchain is a decentralized digital ledger that records transactions across many computers. It's what powers cryptocurrencies like Bitcoin.",
-        "what is bitcoin": "Bitcoin is a decentralized digital currency created in 2009. Transactions are verified by a network of computers and recorded on a blockchain.",
-        "what is the internet": "The internet is a global network of computers connected by fiber, cables, and wireless signals, sharing data using agreed-upon protocols like TCP/IP.",
-        "what is wifi": "Wi-Fi is a wireless networking technology that allows devices to connect to the internet or each other without physical cables, using radio waves.",
-        "what is cloud computing": "Cloud computing means using remote servers (hosted on the internet) to store, manage, and process data instead of local computers.",
-        "what is a cpu": "A CPU (Central Processing Unit) is the brain of a computer. It executes instructions and performs calculations.",
-        "what is a gpu": "A GPU (Graphics Processing Unit) was originally designed for rendering graphics but is now widely used for AI and machine learning due to its parallel processing power.",
-        "what is ram": "RAM (Random Access Memory) is your computer's short-term memory. It holds the data your computer is actively using right now.",
-        "what is an operating system": "An operating system manages your computer's hardware and software. Windows, macOS, Linux, Android, and iOS are all operating systems.",
-        "what is cybersecurity": "Cybersecurity is the practice of protecting systems, networks, and data from digital attacks, damage, or unauthorized access.",
-        "what is vr": "VR (Virtual Reality) uses headsets to immerse you in a fully simulated digital environment, blocking out the real world.",
-        "what is ar": "AR (Augmented Reality) overlays digital content onto the real world through your phone camera or smart glasses.",
-        "what is 5g": "5G is the fifth generation of mobile network technology, offering faster speeds, lower latency, and more capacity than 4G.",
-        "what is open source": "Open source software has publicly available source code that anyone can view, modify, and distribute. Examples include Linux, Firefox, and Python.",
-    };
-
-    // ── HISTORY ──
-    const history = {
-        "when did world war 1 start": "World War 1 started on July 28, 1914, after Archduke Franz Ferdinand of Austria-Hungary was assassinated.",
-        "when did world war 1 end": "World War 1 ended on November 11, 1918, with the signing of the Armistice.",
-        "when did world war 2 start": "World War 2 began on September 1, 1939, when Nazi Germany invaded Poland.",
-        "when did world war 2 end": "World War 2 ended on September 2, 1945, with Japan's formal surrender after the atomic bombings of Hiroshima and Nagasaki.",
-        "what was the cold war": "The Cold War was a political and ideological standoff between the USA and USSR from 1947 to 1991. It never became a direct military war but shaped global politics for decades.",
-        "when did the berlin wall fall": "The Berlin Wall fell on November 9, 1989, reuniting East and West Berlin.",
-        "when was slavery abolished in the us": "Slavery was officially abolished in the United States on December 6, 1865 with the ratification of the 13th Amendment.",
-        "when did kenya get independence": "Kenya gained independence from Britain on December 12, 1963. Jomo Kenyatta became the first Prime Minister.",
-        "when did nigeria get independence": "Nigeria gained independence from Britain on October 1, 1960.",
-        "when did south africa end apartheid": "Apartheid officially ended in South Africa in 1994 when Nelson Mandela was elected president in the first fully democratic elections.",
-        "what was the renaissance": "The Renaissance was a cultural and intellectual rebirth in Europe from the 14th to 17th centuries, reviving art, science, and philosophy from ancient Greece and Rome.",
-        "what was the french revolution": "The French Revolution (1789–1799) was a period of radical political and social change in France, overthrowing the monarchy and establishing democratic principles.",
-        "what was the industrial revolution": "The Industrial Revolution (late 1700s–1800s) transformed societies from agricultural to industrial, through inventions like the steam engine and factory manufacturing.",
-        "who was martin luther king jr": "Martin Luther King Jr. was a Baptist minister and civil rights leader who used nonviolent protest to fight racial inequality in America. He's famous for his 'I Have a Dream' speech.",
-        "who was gandhi": "Mahatma Gandhi led India's independence movement against British rule using nonviolent civil disobedience. He inspired civil rights movements worldwide.",
-        "who was cleopatra": "Cleopatra VII was the last active ruler of ancient Egypt. She was known for her intelligence, political alliances with Julius Caesar and Mark Antony, and her role in the Roman-Egyptian power struggle.",
-        "what was the silk road": "The Silk Road was an ancient network of trade routes connecting China to the Mediterranean, enabling the exchange of goods, ideas, and cultures from around 130 BCE to 1450s CE.",
-        "what was the black death": "The Black Death was a devastating plague that swept Europe from 1347 to 1351, killing an estimated 30–60% of Europe's population.",
-    };
-
-    // ── GEOGRAPHY ──
-    const geo = {
-        "what is the largest country": "Russia is the largest country in the world by land area, covering about 17.1 million square kilometers.",
-        "what is the smallest country": "Vatican City is the smallest country in the world, covering just 0.44 square kilometers inside Rome, Italy.",
-        "what is the longest river": "The Nile is traditionally considered the longest river at about 6,650 km, though the Amazon is sometimes measured as longer.",
-        "what is the amazon river": "The Amazon is the world's largest river by water volume, flowing through South America and discharging more freshwater into the ocean than any other river.",
-        "what is the largest continent": "Asia is the largest continent, covering about 44.6 million square kilometers — about 30% of Earth's total land area.",
-        "what is the smallest continent": "Australia is the smallest continent, also called Oceania.",
-        "what is the sahara desert": "The Sahara is the world's largest hot desert, covering about 9.2 million square kilometers across North Africa.",
-        "what is mount kilimanjaro": "Mount Kilimanjaro is the highest mountain in Africa at 5,895 meters. It's a dormant volcano in Tanzania.",
-        "what is the great wall of china": "The Great Wall of China is a series of fortifications built over centuries along China's northern borders. It stretches over 21,000 km in total.",
-        "what is the amazon rainforest": "The Amazon rainforest is the world's largest tropical rainforest, covering over 5.5 million square kilometers across South America. It produces about 20% of the world's oxygen.",
-        "what is africa": "Africa is the world's second-largest continent and most populous, with 54 recognized countries and over 1.4 billion people. It's home to the Nile, Sahara, and incredible biodiversity.",
-        "what are the seven continents": "The seven continents are: Asia, Africa, North America, South America, Antarctica, Europe, and Australia.",
-        "what is the pacific ocean": "The Pacific Ocean is the largest ocean, covering about 165 million square kilometers — more than all the land on Earth combined.",
-        "what is the great barrier reef": "The Great Barrier Reef off the coast of Australia is the world's largest coral reef system, stretching over 2,300 km. It's a UNESCO World Heritage Site.",
-        "what is mount kenya": "Mount Kenya is the highest mountain in Kenya at 5,199 meters and the second highest in Africa. It's an extinct volcano and a UNESCO World Heritage Site.",
-        "what is the rift valley": "The Great Rift Valley is a geological trench running from the Middle East through East Africa, forming lakes, volcanoes, and fertile valleys across Kenya, Tanzania, and beyond.",
-    };
-
-    // ── PEOPLE ──
-    const people = {
-        "who is elon musk": "Elon Musk is the CEO of Tesla and SpaceX. He's known for wanting to colonize Mars, revolutionizing electric vehicles, and his acquisition of Twitter, now called X.",
-        "who is bill gates": "Bill Gates co-founded Microsoft and became one of the world's richest people. He now focuses on global health and education through the Bill & Melinda Gates Foundation.",
-        "who is steve jobs": "Steve Jobs co-founded Apple and was the visionary behind the iPhone, iPad, Mac, and iPod. He's widely regarded as one of the greatest entrepreneurs in history.",
-        "who is albert einstein": "Albert Einstein was a theoretical physicist who developed the theory of relativity and the famous equation E=mc². He won the Nobel Prize in Physics in 1921.",
-        "who is nelson mandela": "Nelson Mandela was South Africa's first Black president, elected in 1994. He spent 27 years in prison for fighting against apartheid. He's a global symbol of justice and forgiveness.",
-        "who is stephen hawking": "Stephen Hawking was a theoretical physicist who made groundbreaking contributions to our understanding of black holes and cosmology. He wrote 'A Brief History of Time' and lived with ALS for decades.",
-        "who is mark zuckerberg": "Mark Zuckerberg is the co-founder and CEO of Meta (formerly Facebook). He created Facebook in 2004 while at Harvard and has built it into one of the most used platforms on Earth.",
-        "who is oprah winfrey": "Oprah Winfrey is an American talk show host, producer, actress, and philanthropist. Her show ran for 25 years and she became one of the most influential media personalities in history.",
-        "who is usain bolt": "Usain Bolt is a Jamaican sprinter and the fastest human ever recorded. He holds the 100m world record of 9.58 seconds, set in 2009.",
-        "who is cristiano ronaldo": "Cristiano Ronaldo is a Portuguese professional footballer widely considered one of the greatest of all time. He has won multiple Ballon d'Or awards.",
-        "who is lionel messi": "Lionel Messi is an Argentine football legend. He won the FIFA World Cup in 2022 and has won the Ballon d'Or more times than any other player.",
-        "who is beyonce": "Beyoncé is an American singer, songwriter, actress, and businesswoman. She's one of the best-selling music artists of all time and has won over 30 Grammy Awards.",
-        "who is michael jackson": "Michael Jackson was the King of Pop — one of the most iconic entertainers in history. Known for Thriller, Billie Jean, and his signature moonwalk.",
-        "who is rihanna": "Rihanna is a Barbadian singer, businesswoman, and founder of the Fenty Beauty brand. She's one of the best-selling music artists ever with hits like Umbrella and We Found Love.",
-        "who is kevin hart": "Kevin Hart is an American comedian and actor known for his energetic stand-up specials and films like Jumanji, Central Intelligence, and Ride Along.",
-        "who is will smith": "Will Smith is an American actor, rapper, and producer known for The Fresh Prince of Bel-Air, Ali, Hitch, and the Men in Black franchise.",
-        "who is obama": "Barack Obama was the 44th President of the United States from 2009 to 2017, and the first African American president. He won the Nobel Peace Prize in 2009.",
-        "who is donald trump": "Donald Trump is an American businessman and politician who served as the 45th President of the United States from 2017 to 2021.",
-        "who is martin": "Martin is the CEO of Protogen AI, which operates under HECO AFRICA. I'm his creation — Bingo, your AI voice assistant!",
-        "who created you": "I was built by the team at Protogen AI, led by Martin, CEO of Protogen AI under HECO AFRICA.",
-        "who made bingo": "Bingo was created by the team at Protogen AI. Martin is the CEO of Protogen AI, operating under HECO AFRICA.",
-    };
-
-    // ── HEALTH & BODY ──
-    const health = {
-        "how many calories should i eat": "The average adult needs about 2,000 to 2,500 calories per day. Your exact needs depend on age, weight, height, and activity level.",
-        "how much water should i drink": "Most health guidelines recommend about 8 glasses or 2 liters of water per day, though it varies by body size and activity.",
-        "what is bmi": "BMI stands for Body Mass Index — a measure of body fat based on height and weight. A BMI of 18.5–24.9 is considered healthy for adults.",
-        "what are vitamins": "Vitamins are essential nutrients your body needs in small amounts to function. There are 13 essential vitamins including A, C, D, E, K, and the B vitamins.",
-        "what is diabetes": "Diabetes is a condition where the body can't properly regulate blood sugar. Type 1 is autoimmune, Type 2 is linked to lifestyle and is much more common.",
-        "what is hypertension": "Hypertension is persistently high blood pressure, often called the 'silent killer' because it usually has no symptoms but increases risk of heart attack and stroke.",
-        "how does sleep work": "During sleep, your brain consolidates memories, repairs tissue, releases hormones, and flushes out toxins. Most adults need 7–9 hours per night.",
-        "what causes stress": "Stress is caused by perceived threats or demands that exceed your coping ability. It triggers the release of cortisol and adrenaline — the fight-or-flight response.",
-        "what is mental health": "Mental health includes your emotional, psychological, and social wellbeing. It affects how you think, feel, and act, and is just as important as physical health.",
-        "how to meditate": "Start by sitting comfortably, closing your eyes, and focusing on your breath. When your mind wanders, gently bring it back. Even 5–10 minutes a day has proven benefits.",
-        "how many bones in the human body": "Adults have 206 bones. Babies are born with around 270–300, many of which fuse as they grow.",
-        "how long does the human heart beat": "Your heart beats about 100,000 times a day — that's roughly 2.5 billion beats in an average lifetime.",
-        "what is the largest organ": "The skin is the largest organ, covering the entire body and performing functions like protection, temperature regulation, and sensation.",
-    };
-
-    // ── FINANCE ──
-    const finance = {
-        "what is inflation": "Inflation is the rate at which the general level of prices for goods and services rises over time, reducing purchasing power.",
-        "what is the stock market": "The stock market is where shares of publicly listed companies are bought and sold. Major exchanges include NYSE, NASDAQ, London Stock Exchange, and Nairobi Securities Exchange.",
-        "what is gdp": "GDP (Gross Domestic Product) measures the total value of goods and services produced in a country in a year. It's the main indicator of economic size.",
-        "what is a recession": "A recession is a period of economic decline, typically defined as two consecutive quarters of negative GDP growth.",
-        "what is cryptocurrency": "Cryptocurrency is digital money secured by cryptography and usually running on a blockchain. Bitcoin, Ethereum, and Solana are well-known examples.",
-        "what is interest rate": "An interest rate is the cost of borrowing money, expressed as a percentage. Central banks use rates to control inflation and economic growth.",
-        "what is a budget": "A budget is a financial plan that estimates income and expenses over a period. It helps you spend within your means and save for goals.",
-        "what is tax": "Tax is money collected by governments from individuals and businesses to fund public services like roads, healthcare, education, and security.",
-    };
-
-    // ── AFRICA SPECIFIC ──
-    const africa = {
-        "what is heco africa": "HECO AFRICA is the parent company behind Protogen AI. It's an African tech company focused on building innovative AI solutions.",
-        "what is protogen ai": "Protogen AI is an AI company under HECO AFRICA, led by CEO Martin. I'm Bingo — the voice assistant built by Protogen AI.",
-        "what is nairobi": "Nairobi is the capital and largest city of Kenya. It's known as the 'Green City in the Sun' and is the economic hub of East Africa, home to many global companies and the UN's African headquarters.",
-        "what is mpesa": "M-Pesa is a mobile money service launched in Kenya in 2007 by Safaricom. It allows people to send, receive, and save money via phone — one of the world's most successful fintech innovations.",
-        "what is the east african community": "The East African Community (EAC) is a regional intergovernmental organization of East African states including Kenya, Tanzania, Uganda, Rwanda, Burundi, South Sudan, Somalia, and DRC.",
-        "what is the african union": "The African Union (AU) is a continental body of 55 member states across Africa. It aims to promote unity, development, and good governance across the continent.",
-        "what is safari": "A safari is a trip to observe wildlife in their natural habitat, typically in East or Southern Africa. Kenya's Maasai Mara, Amboseli, and Tsavo are world-famous safari destinations.",
-        "what is swahili": "Swahili (Kiswahili) is a Bantu language spoken by over 200 million people across East and Central Africa. It's the official language of Kenya, Tanzania, Uganda, and Rwanda.",
-    };
-
-    // ── POP CULTURE & ENTERTAINMENT ──
-    const popCulture = {
-        "what is the mcu": "The MCU (Marvel Cinematic Universe) is a shared fictional universe built by Marvel Studios across movies and TV shows, starting with Iron Man in 2008.",
-        "what is stranger things": "Stranger Things is a Netflix sci-fi horror series set in the 1980s about a group of kids who encounter supernatural events in Hawkins, Indiana.",
-        "what is game of thrones": "Game of Thrones was an HBO fantasy series based on George R.R. Martin's novels. It ran from 2011 to 2019 and followed noble families fighting for control of the Iron Throne.",
-        "what is fortnite": "Fortnite is a hugely popular battle royale video game by Epic Games. Players are dropped on an island and fight to be the last one standing.",
-        "what is tiktok": "TikTok is a short-form video platform where users share videos up to 3 minutes long. It's owned by ByteDance and has over a billion users worldwide.",
-        "what is netflix": "Netflix is an American streaming service with thousands of movies, series, and documentaries. It operates in over 190 countries.",
-        "what is spotify": "Spotify is a music streaming platform with over 600 million users. It offers music, podcasts, and audiobooks from artists around the world.",
-        "what is youtube": "YouTube is the world's largest video sharing platform, owned by Google. Over 500 hours of video are uploaded every minute.",
-        "what is instagram": "Instagram is a photo and video sharing social media platform owned by Meta. It launched in 2010 and is known for its visual-first format and Stories feature.",
-        "what is twitter": "Twitter, now rebranded as X, is a social media platform for short messages called tweets. It was acquired by Elon Musk in 2022.",
-    };
-
-    // ── FOOD & CULTURE ──
-    const food = {
-        "what is ugali": "Ugali is a staple food in East Africa, especially Kenya and Tanzania. It's a stiff porridge made from maize flour, usually eaten with vegetables or meat.",
-        "what is injera": "Injera is a spongy flatbread from Ethiopia and Eritrea, made from fermented teff flour. It's used as both a utensil and base for dishes.",
-        "what is jollof rice": "Jollof rice is a beloved West African dish made with rice cooked in a tomato-based sauce with spices. Nigeria and Ghana famously debate who makes it best.",
-        "what is nyama choma": "Nyama choma means 'roasted meat' in Swahili and is Kenya's most popular traditional dish — usually goat or beef roasted over an open fire.",
-        "what is suya": "Suya is a popular West African street food — thin strips of spiced, skewered meat grilled over charcoal. It's especially popular in Nigeria.",
-        "what is chai": "In East Africa, chai means tea. Kenyan chai is made by boiling milk, water, tea leaves, and spices like ginger, cinnamon, and cardamom together.",
-    };
-
-    // Merge all knowledge
-    const allKnowledge = { ...science, ...tech, ...history, ...geo, ...people, ...health, ...finance, ...africa, ...popCulture, ...food };
-
-    for (let [key, answer] of Object.entries(allKnowledge)) {
-        if (q.includes(key)) return answer;
-    }
-
-    // Fuzzy match: check if most words in key appear in query
-    for (let [key, answer] of Object.entries(allKnowledge)) {
-        const keyWords = key.split(' ').filter(w => w.length > 3);
-        if (keyWords.length > 0 && keyWords.every(w => q.includes(w))) return answer;
-    }
-
-    return null;
-}
-
-// ═══════════════════════════════════════════════════════════
-// LOCAL COMMANDS — ENHANCED
-// ═══════════════════════════════════════════════════════════
-function localCommand(q) {
-    const ql = q.toLowerCase().trim();
-
-    // ── TIMERS ──
-    const timerResult = tryTimer(q);
-    if (timerResult) return timerResult;
-
-    // ── TRIVIA ──
-    const triviaResult = tryTrivia(q);
-    if (triviaResult) return triviaResult;
-
-    // ── OPEN APPS ──
-    if (/open youtube|go to youtube/i.test(ql) && !/music|play|song/i.test(ql)) { window.open('https://youtube.com', '_blank'); return "Opening YouTube for you."; }
-    if (/open google|go to google/i.test(ql)) { window.open('https://google.com', '_blank'); return "Opening Google."; }
-    if (/open whatsapp/i.test(ql)) { window.open('https://web.whatsapp.com', '_blank'); return "Opening WhatsApp Web."; }
-    if (/open instagram/i.test(ql)) { window.open('https://instagram.com', '_blank'); return "Opening Instagram."; }
-    if (/open twitter|open x/i.test(ql)) { window.open('https://x.com', '_blank'); return "Opening X."; }
-    if (/open tiktok/i.test(ql)) { window.open('https://tiktok.com', '_blank'); return "Opening TikTok."; }
-    if (/open spotify/i.test(ql)) { window.open('https://open.spotify.com', '_blank'); return "Opening Spotify."; }
-    if (/open netflix/i.test(ql)) { window.open('https://netflix.com', '_blank'); return "Opening Netflix."; }
-    if (/open gmail/i.test(ql)) { window.open('https://mail.google.com', '_blank'); return "Opening Gmail."; }
-    if (/open maps|google maps/i.test(ql)) { window.open('https://maps.google.com', '_blank'); return "Opening Google Maps."; }
-    if (/search (?:for |google )(.+)/i.test(ql)) {
-        const searchQuery = ql.match(/search (?:for |google )?(.+)/i)[1];
-        window.open(`https://google.com/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
-        return `Searching Google for ${searchQuery}.`;
-    }
-
-    // ── LANGUAGE SWITCH ──
-    if (/speak french|switch to french|parle français/i.test(ql)) { activeLang = 'fr-FR'; VR.stopAll(); setTimeout(() => VR.startWake(), 500); return { text: "D'accord! Je parle maintenant en français. Comment puis-je vous aider?", lang: 'fr-FR' }; }
-    if (/speak spanish|switch to spanish|habla español/i.test(ql)) { activeLang = 'es-ES'; VR.stopAll(); setTimeout(() => VR.startWake(), 500); return { text: "¡Claro! Ahora hablo español. ¿En qué te puedo ayudar?", lang: 'es-ES' }; }
-    if (/speak chinese|mandarin|说中文/i.test(ql)) { activeLang = 'zh-CN'; VR.stopAll(); setTimeout(() => VR.startWake(), 500); return { text: "好的！我现在用中文说话。有什么我可以帮你的？", lang: 'zh-CN' }; }
-    if (/speak english|back to english|switch to english/i.test(ql)) { activeLang = 'en-US'; VR.stopAll(); setTimeout(() => VR.startWake(), 500); return "Back to English! What do you need?"; }
-
-    // ── MUSIC — MOOD & GENRE ──
-    if (/play (something )?(chill|relaxing|calm|smooth)/i.test(ql)) { playByMood('chill'); return null; }
-    if (/play (something )?(upbeat|hype|energetic|pump me up|party)/i.test(ql)) { playByMood('upbeat'); return null; }
-    if (/play (something )?(sad|emotional|heartbreak)/i.test(ql)) { playByMood('sad'); return null; }
-    if (/play (something )?(romantic|love songs?)/i.test(ql)) { playByMood('romantic'); return null; }
-    if (/play (something )?(powerful|epic|motivational)/i.test(ql)) { playByMood('powerful'); return null; }
-    if (/play (afrobeats|afropop|amapiano|rock|pop|rap|hip.hop|r&b|soul|jazz|gospel|kpop|k.pop)/i.test(ql)) {
-        const genreMatch = ql.match(/play (afrobeats|afropop|amapiano|rock|pop|rap|hip.hop|r&b|soul|jazz|gospel|kpop|k.pop)/i);
-        playByGenre(genreMatch[1]); return null;
-    }
-    if (/^play\b|play (music|a song)/i.test(ql)) {
-        const sQ = ql.replace(/^play\s*/, '').replace(/\b(music|songs?|me|some|a|track|random)\b/g, '').trim();
-        playSong(findSong(sQ || 'music')); return null;
-    }
-    if (/next song|skip|next track/i.test(ql)) { nextSong(); return null; }
-    if (/previous|prev song|go back|last song/i.test(ql)) { prevSong(); return null; }
-    if (/stop music|stop the song|stop playing/i.test(ql)) { stopMusic(); return null; }
-    if (/\bpause\b/i.test(ql)) { togglePlay(); return null; }
-    if (/resume|unpause/i.test(ql)) { if (!playing && curSong >= 0) togglePlay(); return null; }
-    if (/shuffle/i.test(ql)) { toggleShuffle(); return null; }
-    if (/repeat|loop/i.test(ql)) { toggleRepeat(); return null; }
-    if (/what.*playing|current song|now playing/i.test(ql)) {
-        if (curSong >= 0) return `That's ${SONGS[curSong].t} by ${SONGS[curSong].a}.`;
-        return "Nothing's playing right now. Just say play music!";
-    }
-    if (/what was the last song|previous song was/i.test(ql)) {
-        if (lastSong >= 0) return `The last song was ${SONGS[lastSong].t} by ${SONGS[lastSong].a}.`;
-        return "No previous song this session.";
-    }
-    if (/how many songs|song count|library size/i.test(ql)) { return `My library has ${SONGS.length} songs across various genres.`; }
-    if (/volume up|louder/i.test(ql)) { setVol(Math.min(1, vol + 0.2)); return "Turned up!"; }
-    if (/volume down|quieter/i.test(ql)) { setVol(Math.max(0.1, vol - 0.2)); return "Turned down."; }
-    if (/volume (\d+)/i.test(ql)) {
-        const vMatch = ql.match(/volume (\d+)/i);
-        const vLevel = Math.min(100, Math.max(0, parseInt(vMatch[1]))) / 100;
-        setVol(vLevel); return `Volume set to ${Math.round(vLevel * 100)}%.`;
-    }
-    if (/mute/i.test(ql)) { setVol(0); return "Muted."; }
-
-    // ── VOICE ──
-    if (/female voice|use female/i.test(ql)) { voiceGender = 'female'; return "Switched to a female voice."; }
-    if (/male voice|use male/i.test(ql)) { voiceGender = 'male'; return "Switched to a male voice."; }
-
-    // ── PERSONALITY MODES ──
-    if (/be chill|chill mode|casual mode/i.test(ql)) { personality = 'chill'; return "Aight, chill mode on. What's good?"; }
-    if (/be professional|professional mode|formal mode/i.test(ql)) { personality = 'professional'; return "Understood. I'll be more formal from now on."; }
-    if (/be hype|hype mode|energy mode/i.test(ql)) { personality = 'hype'; return "YOOO LET'S GO! Hype mode activated!"; }
-
-    // ── JOKES ──
-    if (/joke|make me laugh|tell me a joke/i.test(ql)) {
-        const jokes = [
-            "Why don't scientists trust atoms? Because they make up everything.",
-            "Why did the AI go to therapy? Too many deep learning issues.",
-            "I told my GPS to take me somewhere fun. It took me home. Disrespect.",
-            "Why do programmers prefer dark mode? Light attracts bugs.",
-            "I'm reading a book about anti-gravity. It's impossible to put down.",
-            "Why did the scarecrow win an award? Because he was outstanding in his field.",
-            "I used to hate facial hair, but then it grew on me.",
-            "What do you call a fish without eyes? A fsh.",
-            "Why don't eggs tell jokes? They'd crack each other up.",
-            "I asked my phone to remind me to eat. It said it didn't carrot all."
-        ];
-        return jokes[Math.floor(Math.random() * jokes.length)];
-    }
-
-    // ── ROASTS ──
-    if (/roast me|say something savage|give me a roast/i.test(ql)) {
-        const roasts = [
-            "You're like a software update — I see you, but I'm not sure I need you.",
-            "I'd explain it to you, but I left my crayons at home.",
-            "Your secrets are safe with me. I never listen anyway.",
-            "You bring everyone so much joy — when you leave.",
-            "I'd agree with you, but then we'd both be wrong.",
-            "If laughter is the best medicine, your face must be curing diseases."
-        ];
-        return roasts[Math.floor(Math.random() * roasts.length)];
-    }
-
-    // ── COMPLIMENTS ──
-    if (/compliment me|say something nice|motivate me|inspire me/i.test(ql)) {
-        const compliments = [
-            "You're the kind of person who makes the world better just by being in it. Keep going.",
-            "You've got what it takes. The fact you're pushing forward already puts you ahead.",
-            "Smart people ask questions. That's exactly what you're doing. You're on the right path.",
-            "Potential is nice. You actually put in the work. That's rarer and more valuable.",
-            "The version of you that exists a year from now will thank today's you."
-        ];
-        return compliments[Math.floor(Math.random() * compliments.length)];
-    }
-
-    // ── GREETINGS ──
-    if (/^(hi|hello|hey|good morning|good afternoon|good evening|what's up|sup|howdy)\b/i.test(ql)) {
-        const hour = new Date().getHours();
-        const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-        const variations = [
-            `${greeting}! I'm Bingo. What can I do for you?`,
-            `${greeting}! Ready when you are. Ask me anything.`,
-            `Hey! ${greeting} to you. What's on your mind?`
-        ];
-        return variations[Math.floor(Math.random() * variations.length)];
-    }
-
-    // ── ABOUT / IDENTITY ──
-    if (/who (made|created|built) you|who are you|about yourself|introduce/i.test(ql)) {
-        return "I'm Bingo, the AI voice assistant for Protogen AI — built by Martin, CEO of Protogen AI under HECO AFRICA. I can answer questions, play music, set timers, do math, convert units, search the web, open apps, and even quiz you. Just say Bingo and ask.";
-    }
-
-    // ── HELP ──
-    if (/what can you do|help|commands|features|capabilities/i.test(ql)) {
-        return "I can answer questions on science, history, geography, people, health, and more. Play music by song, artist, genre, or mood. Set timers and reminders. Do math and unit conversions. Open apps like YouTube and Google. Run trivia. And search the web for anything I don't know. Just ask!";
-    }
-
-    // ── STOP ──
-    if (/stop speaking|be quiet|shut up|stop talking|silence/i.test(ql)) { stopSpeak(); return null; }
-
-    // ── THANKS ──
-    if (/thank you|thanks|appreciate/i.test(ql)) {
-        return ["You're welcome!", "Happy to help!", "Anytime!", "That's what I'm here for."][Math.floor(Math.random() * 4)];
-    }
-
-    // ── FEELINGS ──
-    if (/how are you|are you okay|you good/i.test(ql)) {
-        return "I'm doing great, thanks for asking! I'm fully charged and ready to help. What do you need?";
-    }
-    if (/do you have feelings|are you sentient|are you conscious/i.test(ql)) {
-        return "That's a deep one. I don't have feelings the way you do, but I'm designed to understand and respond to what you need. Think of me as a very attentive and knowledgeable friend.";
-    }
-
-    return null;
-}
-
-// ═══════════════════════════════════════════════════════════
-// MAIN PROCESSING
-// ═══════════════════════════════════════════════════════════
-async function processInput(text) {
-    const q = text.trim();
-    if (!q) { VR.startWake(); return; }
-
-    stopSpeak(); setLogo('thinking'); waveOn(false); setStatus('Thinking...', ''); showTx(q, null);
-
-    const local = localCommand(q);
-    if (local !== null && local !== undefined) {
-        if (typeof local === 'string') { showTx(q, local); speakText(local, { lang: activeLang }); }
-        else if (typeof local === 'object' && local.text) { showTx(q, local.text); speakText(local.text, { lang: local.lang || activeLang }); }
-        setLogo('idle'); return;
-    }
-
-    const knownAnswer = getKnownAnswer(q);
-    if (knownAnswer) { showTx(q, knownAnswer); speakText(knownAnswer, { lang: activeLang }); setLogo('idle'); return; }
-
-    const searchResult = await webSearchDirect(q);
-    showTx(q, searchResult); speakText(searchResult, { lang: activeLang }); setLogo('idle');
-}
-
-// ═══════════════════════════════════════════════════════════
-// TAP HANDLER
-// ═══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+//  TAP HANDLER
+// ══════════════════════════════════════════════════════
 function onTap() {
     if (VR.chatActive) return;
-    unlockAudio(); stopSpeak();
-    if (isMobile) navigator.vibrate?.(50);
+    unlockAudio();
+    stopSpeak();
+    if (isMobile && navigator.vibrate) navigator.vibrate(50);
     VR.startChat();
 }
 
-// ═══════════════════════════════════════════════════════════
-// STARTUP
-// ═══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+//  STARTUP
+// ══════════════════════════════════════════════════════
 window.addEventListener('load', () => {
     setLogo('idle');
-    setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb · Say "Bingo"');
+    setStatus('Say "Bingo"', isMobile ? 'Tap or say Bingo' : 'Tap orb or say "Bingo"');
 
     const logo = document.getElementById('logoOuter');
-    if (logo) { logo.addEventListener('click', onTap); logo.addEventListener('touchstart', onTap); }
+    if (logo) {
+        logo.addEventListener('click',      onTap, { passive: true });
+        logo.addEventListener('touchstart', onTap, { passive: true });
+    }
 
-    if (window.speechSynthesis) window.speechSynthesis.getVoices();
+    // Type-to-ask support (optional input field)
+    const inp = document.getElementById('textInput');
+    if (inp) {
+        inp.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && inp.value.trim()) {
+                processInput(inp.value.trim());
+                inp.value = '';
+            }
+        });
+    }
+    const sendBtn = document.getElementById('sendBtn');
+    if (sendBtn && inp) {
+        sendBtn.addEventListener('click', () => {
+            if (inp.value.trim()) {
+                processInput(inp.value.trim());
+                inp.value = '';
+            }
+        });
+    }
+
+    if (window.speechSynthesis) {
+        window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
 
     setTimeout(() => {
-        const hour = new Date().getHours();
-        const g = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-        speakText(`${g}! I'm Bingo, your AI voice assistant. Say Bingo to wake me up and ask me anything — music, math, timers, trivia, or any question you have.`);
+        speakText("Hello! I'm Bingo, your AI voice assistant by Protogen AI. Say Bingo or tap to activate me. Ask me about football, maths, history, or anything!");
     }, 1500);
 
     setTimeout(() => VR.startWake(), 4500);
 });
 
-// ═══════════════════════════════════════════════════════════
-// EXPOSED GLOBALS FOR HTML
-// ═══════════════════════════════════════════════════════════
-window.onTap = onTap;
-window.togglePlay = togglePlay;
-window.nextSong = nextSong;
-window.prevSong = prevSong;
-window.stopMusic = stopMusic;
-window.setVol = setVol;
-window.toggleShuffle = toggleShuffle;
-window.toggleRepeat = toggleRepeat;
-window.seekSong = (e) => {
+// ══════════════════════════════════════════════════════
+//  SEEK HANDLER
+// ══════════════════════════════════════════════════════
+function seekSong(e) {
     const r = document.getElementById('ptrack');
     if (r && curSong >= 0) {
-        const rect = r.getBoundingClientRect();
-        let clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+        const rect    = r.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         songPos = Math.floor(((clientX - rect.left) / rect.width) * songDur);
         songPos = Math.max(0, Math.min(songPos, songDur));
+        const pfill = document.getElementById('pfill');
+        const pCur  = document.getElementById('pCur');
+        if (pfill) pfill.style.width = (songPos / songDur * 100) + '%';
+        if (pCur)  pCur.textContent  = fmt(songPos);
     }
-};
+}
+
+// ══════════════════════════════════════════════════════
+//  EXPOSE GLOBALS
+// ══════════════════════════════════════════════════════
+window.onTap          = onTap;
+window.togglePlay     = togglePlay;
+window.nextSong       = nextSong;
+window.prevSong       = prevSong;
+window.stopMusic      = stopMusic;
+window.setVol         = setVol;
+window.toggleShuffle  = toggleShuffle;
+window.toggleRepeat   = toggleRepeat;
+window.processInput   = processInput;
+window.speakText      = speakText;
+window.setStatus      = setStatus;
+window.waveOn         = waveOn;
+window.setLogo        = setLogo;
+window.flashWake      = flashWake;
+window.toast          = toast;
+window.showTx         = showTx;
+window.seekSong       = seekSong;
